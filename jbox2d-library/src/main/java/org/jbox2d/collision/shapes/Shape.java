@@ -39,6 +39,10 @@ public abstract class Shape {
   public final ShapeType m_type;
   public float m_radius;
 
+  /**
+   *
+   * @param type CIRCLE, EDGE, POLYGON, CHAIN
+   */
   public Shape(ShapeType type) {
     this.m_type = type;
   }
@@ -46,7 +50,7 @@ public abstract class Shape {
   /**
    * Get the type of this shape. You can use this to down cast to the concrete shape.
    * 
-   * @return the shape type.
+   * @return the shape type: CIRCLE, EDGE, POLYGON, CHAIN
    */
   public ShapeType getType() {
     return m_type;
@@ -55,8 +59,9 @@ public abstract class Shape {
   /**
    * The radius of the underlying shape. This can refer to different things depending on the shape
    * implementation
+   * @note UNUSED
    * 
-   * @return
+   * @return radius of shape (Pos, 0, Neg???)
    */
   public float getRadius() {
     return m_radius;
@@ -66,7 +71,7 @@ public abstract class Shape {
    * Sets the radius of the underlying shape. This can refer to different things depending on the
    * implementation
    * 
-   * @param radius
+   * @param radius any floating value??
    */
   public void setRadius(float radius) {
     this.m_radius = radius;
@@ -90,11 +95,11 @@ public abstract class Shape {
   /**
    * Cast a ray against a child shape.
    * 
-   * @param argOutput the ray-cast results.
-   * @param argInput the ray-cast input parameters.
-   * @param argTransform the transform to be applied to the shape.
-   * @param argChildIndex the child shape index
-   * @return if hit
+   * @param output the ray-cast results.
+   * @param input the ray-cast input parameters.
+   * @param transform the transform to be applied to the shape.
+   * @param childIndex the child shape index
+   * @return true if hit
    */
   public abstract boolean raycast(RayCastOutput output, RayCastInput input, Transform transform,
       int childIndex);
@@ -103,8 +108,9 @@ public abstract class Shape {
   /**
    * Given a transform, compute the associated axis aligned bounding box for a child shape.
    * 
-   * @param argAabb returns the axis aligned box.
-   * @param argXf the world transform of the shape.
+   * @param aabb returns the axis aligned box.
+   * @param xf the world transform of the shape.
+   * @param childIndex IDK?
    */
   public abstract void computeAABB(final AABB aabb, final Transform xf, int childIndex);
 
@@ -133,5 +139,9 @@ public abstract class Shape {
    * public abstract float computeSubmergedArea(Vec2 normal, float offset, Transform xf, Vec2 c);
    */
 
+  /**
+   * Clone the shape
+   * @return deep copy of shape.
+   */
   public abstract Shape clone();
 }

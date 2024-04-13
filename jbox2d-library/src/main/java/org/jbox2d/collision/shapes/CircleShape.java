@@ -54,6 +54,10 @@ public class CircleShape extends Shape {
     return shape;
   }
 
+  /**
+   * WHAT IS THE CHILD??
+   * @return 1
+   */
   public final int getChildCount() {
     return 1;
   }
@@ -61,8 +65,8 @@ public class CircleShape extends Shape {
   /**
    * Get the supporting vertex index in the given direction.
    * 
-   * @param d
-   * @return
+   * @param d direction vector (neg, 0 , pos)
+   * @return 0 ??
    */
   public final int getSupport(final Vec2 d) {
     return 0;
@@ -71,8 +75,8 @@ public class CircleShape extends Shape {
   /**
    * Get the supporting vertex in the given direction.
    * 
-   * @param d
-   * @return
+   * @param d direction vector (neg,0, pos)
+   * @return m_p
    */
   public final Vec2 getSupportVertex(final Vec2 d) {
     return m_p;
@@ -81,7 +85,7 @@ public class CircleShape extends Shape {
   /**
    * Get the vertex count.
    * 
-   * @return
+   * @return 1 : circle has 1
    */
   public final int getVertexCount() {
     return 1;

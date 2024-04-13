@@ -114,7 +114,8 @@ public class PolygonShape extends Shape {
   /**
    * Create a convex hull from the given array of points. The count must be in the range [3,
    * Settings.maxPolygonVertices]. This method takes an arraypool for pooling
-   * 
+   * @param verts vertices of the polygon, reordered
+   * @param num in the range [3, Settings.maxPolygonVertices]
    * @warning the points may be re-ordered, even if they form a convex polygon
    * @warning collinear points are handled but not removed. Collinear points may lead to poor
    *          stacking behavior.
