@@ -94,8 +94,8 @@ public class CircleShape extends Shape {
   /**
    * Get a vertex by index.
    * 
-   * @param index
-   * @return
+   * @param index (assert it is 0)
+   * @return the only vertex of this obj
    */
   public final Vec2 getVertex(final int index) {
     assert (index == 0);

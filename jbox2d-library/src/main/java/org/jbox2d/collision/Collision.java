@@ -508,7 +508,7 @@ public class Collision {
   /**
    * Find the max separation between poly1 and poly2 using edge normals from poly1.
    * 
-   * @param edgeIndex
+   * @param results
    * @param poly1
    * @param xf1
    * @param poly2
@@ -689,10 +689,10 @@ public class Collision {
    * Compute the collision manifold between two polygons.
    * 
    * @param manifold
-   * @param polygon1
-   * @param xf1
-   * @param polygon2
-   * @param xf2
+   * @param polyA
+   * @param xfA
+   * @param polyB
+   * @param xfB
    */
   public final void collidePolygons(Manifold manifold, final PolygonShape polyA,
       final Transform xfA, final PolygonShape polyB, final Transform xfB) {

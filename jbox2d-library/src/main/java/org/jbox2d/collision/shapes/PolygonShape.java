@@ -557,7 +557,7 @@ public class PolygonShape extends Shape {
   /**
    * Validate convexity. This is a very time consuming operation.
    * 
-   * @return
+   * @return true if convex
    */
   public boolean validate() {
     for (int i = 0; i < m_count; ++i) {
@@ -592,7 +592,9 @@ public class PolygonShape extends Shape {
     return m_normals;
   }
 
-  /** Get the centroid and apply the supplied transform. */
+  /** Get the centroid and apply the supplied transform.
+   * @param xf the shape transform
+   * */
   public Vec2 centroid(final Transform xf) {
     return Transform.mul(xf, m_centroid);
   }

@@ -38,8 +38,7 @@ import org.jbox2d.common.Vec2;
  * can use inside and outside collision. Therefore, you may use any winding order. Since there may
  * be many vertices, they are allocated using Alloc. Connectivity information is used to create
  * smooth collisions. WARNING The chain will not collide properly if there are self-intersections.
- * 
- * @author Daniel
+ *
  */
 public class ChainShape extends Shape {
 
@@ -57,6 +56,10 @@ public class ChainShape extends Shape {
     m_count = 0;
   }
 
+  /**
+   *
+   * @return number of children: -1 at start
+   */
   @Override
   public int getChildCount() {
     return m_count - 1;
@@ -64,6 +67,8 @@ public class ChainShape extends Shape {
 
   /**
    * Get a child edge.
+   * @param edge
+   * @param index
    */
   public void getChildEdge(EdgeShape edge, int index) {
     assert (0 <= index && index < m_count - 1);
@@ -203,7 +208,7 @@ public class ChainShape extends Shape {
    * Create a chain with isolated end vertices.
    * 
    * @param vertices an array of vertices, these are copied
-   * @param count the vertex count
+   * @param count the vertex count: [NEG, ZERO, POS]
    */
   public void createChain(final Vec2 vertices[], int count) {
     assert (m_vertices == null && m_count == 0);
