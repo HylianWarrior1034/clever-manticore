@@ -99,7 +99,6 @@ public class EdgeShape extends Shape {
     tempy = input.p1.y - xfp.y;
     final float p1x = xfq.c * tempx + xfq.s * tempy;
     final float p1y = -xfq.s * tempx + xfq.c * tempy;
-
     tempx = input.p2.x - xfp.x;
     tempy = input.p2.y - xfp.y;
     final float p2x = xfq.c * tempx + xfq.s * tempy;
@@ -107,7 +106,6 @@ public class EdgeShape extends Shape {
 
     final float dx = p2x - p1x;
     final float dy = p2y - p1y;
-
     // final Vec2 normal = pool2.set(v2).subLocal(v1);
     // normal.set(normal.y, -normal.x);
     normal.x = v2.y - v1.y;
@@ -115,7 +113,6 @@ public class EdgeShape extends Shape {
     normal.normalize();
     final float normalx = normal.x;
     final float normaly = normal.y;
-
     // q = p1 + t * d
     // dot(normal, q - v1) = 0
     // dot(normal, p1 - v1) + t * dot(normal, d) = 0
@@ -123,7 +120,6 @@ public class EdgeShape extends Shape {
     tempy = v1.y - p1y;
     float numerator = normalx * tempx + normaly * tempy;
     float denominator = normalx * dx + normaly * dy;
-
     if (denominator == 0.0f) {
       return false;
     }
@@ -143,6 +139,9 @@ public class EdgeShape extends Shape {
     final float rx = v2.x - v1.x;
     final float ry = v2.y - v1.y;
     final float rr = rx * rx + ry * ry;
+
+    // unreachable, for rr == 0.0f, rx = ry = 0.
+    // This is checked in denominator == 0.0f at the beginning.
     if (rr == 0.0f) {
       return false;
     }

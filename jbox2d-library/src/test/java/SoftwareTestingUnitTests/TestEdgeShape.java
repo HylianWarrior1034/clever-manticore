@@ -41,6 +41,7 @@ public class TestEdgeShape {
   }
 
   /*
+  Blackbox Partitioning
   set method sets m_vertex1 and m_vertex2 to each respective input
    */
   @ParameterizedTest
@@ -58,6 +59,8 @@ public class TestEdgeShape {
   }
 
   /*
+  Blackbox error guessing
+  Property-Based Testing
   raycast should return false if two input vectors are parallel
    */
   @Test
@@ -83,5 +86,143 @@ public class TestEdgeShape {
     assertFalse(edge.raycast(output, input, trans, 1));
   }
 
+  /*
+  Whitebox Testing, Branch Coverage
+  raycast should return false if two input vectors are parallel
+   */
+  @Test
+  public void testRayCastInvalidVectors1() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
 
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = 0.2f;
+    vec1.y = 0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = -0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+   Whitebox Testing, Branch Coverage
+   raycast should return false if two input vectors are parallel
+  */
+  @Test
+  public void testRayCastInvalidVectors2() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = -0.2f;
+    vec1.y = -0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = -0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+   Whitebox Testing, Branch Coverage
+   raycast should return false if two input vectors are parallel
+  */
+  @Test
+  public void testRayCastInvalidVectors3() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = -0.2f;
+    vec1.y = -0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.1f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+    Whitebox Testing, Branch Coverage
+    raycast should return false if two input vectors are parallel
+   */
+  @Test
+  public void testRayCastInvalidVectors4() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = 0.2f;
+    vec1.y = 0.2f;
+    vec2.x = 0.1f;
+    vec2.y = 0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = -1f;
+    vec3.y = -1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = -0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
 }
