@@ -48,12 +48,18 @@ public class TestPolygonShape {
     }
 
     // Testing: set()
-    @Test
     // TODO: do EP here
-    public void testSet() {
+    private static Stream<Arguments> testSetArgs() {
+        // Format: circleRadius, pointPosition, isInCircle
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSetArgs")
+    public void testSet(Vec2[] vertices, int count) {
         PolygonShape polygonShape = new PolygonShape();
-        Vec2[] vertices = {new Vec2(1,0), new Vec2(1,1), new Vec2(0,1), new Vec2(0,0)};
-        int count = 4;
         polygonShape.set(vertices, count);
         assertEquals(count, polygonShape.m_count);
         Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, count);
@@ -63,6 +69,25 @@ public class TestPolygonShape {
     }
 
     // Testing: setAsBox()
+    // TODO: do EP here
+    private static Stream<Arguments> testSetAsBoxArgs() {
+        // Format: circleRadius, pointPosition, isInCircle
+        return Stream.of(
+                Arguments.of(1f, 1f, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSetAsBoxArgs")
+    public void testSetAsBox(float halfX, float halfY, Vec2[] expectedVertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(halfX, halfY);
+        assertEquals(4, polygonShape.m_count);
+        Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, 4);
+        List<Vec2> verticesList = Arrays.asList(expectedVertices);
+        List<Vec2> polygonVerticesList = Arrays.asList(polygonVertices);
+        assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
+    }
 
     // Testing: testPoint()
 
