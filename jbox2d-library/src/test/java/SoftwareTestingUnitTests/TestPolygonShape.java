@@ -50,7 +50,6 @@ public class TestPolygonShape {
     // Testing: set()
     // TODO: do EP here
     private static Stream<Arguments> testSetArgs() {
-        // Format: circleRadius, pointPosition, isInCircle
         return Stream.of(
                 Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4)
         );
@@ -71,7 +70,6 @@ public class TestPolygonShape {
     // Testing: setAsBox()
     // TODO: do EP here
     private static Stream<Arguments> testSetAsBoxArgs() {
-        // Format: circleRadius, pointPosition, isInCircle
         return Stream.of(
                 Arguments.of(1f, 1f, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),})
         );
@@ -90,28 +88,101 @@ public class TestPolygonShape {
     }
 
     // Testing: testPoint()
+    // TODO: do EP here
+    private static Stream<Arguments> testTestPointArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, new Vec2(0,0), true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testTestPointArgs")
+    public void testTestPoint(Vec2[] vertices, int count, Vec2 point, boolean isInShape) {
+        Transform transform = new Transform();
+        transform.setIdentity();
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, count);
+        assertEquals(isInShape, polygonShape.testPoint(transform, point));
+    }
 
     // Testing: computeAABB()
+    // TODO: perform EP here
+    private static Stream<Arguments> testComputeAABBArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, 0, 0, 1, 1)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testComputeAABBArgs")
+    public void testComputeAABB(Vec2[] vertices, int count, float lower_x, float lower_y, float upper_x, float upper_y) {
+        Transform transform = new Transform();
+        transform.setIdentity();
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, count);
+        AABB aabb = new AABB();
+        polygonShape.computeAABB(aabb, transform, 0);
+        //TODO: why do I have to set the delta so high?
+        assertEquals(lower_x, aabb.lowerBound.x, 1e-2);
+        assertEquals(lower_y, aabb.lowerBound.y, 1e-2);
+        assertEquals(upper_x, aabb.upperBound.x, 1e-2);
+        assertEquals(upper_y, aabb.upperBound.y, 1e-2);
+    }
 
     // Testing: getVertexCount()
+    // TODO: do EP here
+    private static Stream<Arguments> testGetVertexCountArgs() {
+        return testSetArgs();
+    }
+
+    @ParameterizedTest
+    @MethodSource("testGetVertexCountArgs")
+    public void testGetVertexCount(Vec2[] vertices, int count) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, count);
+        assertEquals(count, polygonShape.m_count);
+        assertEquals(count, polygonShape.getVertexCount());
+    }
+
+    // Testing: getVertex()
+    // EP: index can be negative, zero, or positive
+    private static Stream<Arguments> testGetVertexArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, -1),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, 0),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, 1)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testGetVertexArgs")
+    public void testGetVertex(Vec2[] vertices, int count, int vertexIndex) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, count);
+        assertEquals(polygonShape.m_vertices[vertexIndex], polygonShape.getVertex(vertexIndex));
+    }
 
     // Testing: raycast()
+    // TODO
 
     // Testing: computeCentroidToOut()
+    // TODO
 
     // Testing: computeMass()
+    // TODO
 
     // Testing: validate()
+    // TODO
 
     // Testing: getVertices()
+    // TODO
 
     // Testing: getNormals()
+    // TODO
 
     // Testing: centroid()
+    // TODO
 
     // Testing: centroidToOut()
-
-
-
-
+    // TODO
 }
