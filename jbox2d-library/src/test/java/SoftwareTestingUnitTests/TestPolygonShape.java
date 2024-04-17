@@ -3,6 +3,7 @@ package SoftwareTestingUnitTests;
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Rot;
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.junit.jupiter.api.Test;
@@ -183,6 +184,30 @@ public class TestPolygonShape {
     // Testing: centroid()
     // TODO
 
+
+    @ParameterizedTest
+    @CsvSource({"-1, -1", "-1, 0", "-1, 1", "0, -1", "0, 0", "0, 1", "1, -1", "1, 0", "1, 1"})
+    public void testCentroid(float x, float y) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.m_centroid.set(x, y);
+        Transform trans = new Transform();
+        Rot rot = new Rot();
+        rot.s = 1;
+        rot.c = 0;
+        Vec2 ret = polygonShape.centroid(trans);
+        System.out.printf("%f %f\n", ret.x, ret.y);
+    }
+
     // Testing: centroidToOut()
     // TODO
+    @ParameterizedTest
+    @MethodSource("testGetVertexArgs")
+    public void testCentroidToOut() {
+        final Vec2 out = new Vec2();
+        Transform trans = new Transform();
+        Rot rot = new Rot();
+        rot.s = 1;
+        rot.c = 0;
+//        assertEquals();
+    }
 }
