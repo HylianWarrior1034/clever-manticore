@@ -60,6 +60,7 @@ public class TestEdgeShape {
   /*
   raycast should return false if two input vectors are parallel
    */
+  @Test
   public void testRayCastParallelVectors() {
     Vec2 vec1 = new Vec2();
     Vec2 vec2 = new Vec2();
