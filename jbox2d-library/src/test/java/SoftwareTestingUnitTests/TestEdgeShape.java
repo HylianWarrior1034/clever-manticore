@@ -2,6 +2,7 @@ package SoftwareTestingUnitTests;
 import org.jbox2d.collision.RayCastInput;
 import org.jbox2d.collision.RayCastOutput;
 import org.jbox2d.collision.shapes.EdgeShape;
+import org.jbox2d.collision.shapes.MassData;
 import org.jbox2d.common.Rot;
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
@@ -41,6 +42,7 @@ public class TestEdgeShape {
   }
 
   /*
+  Blackbox Partitioning
   set method sets m_vertex1 and m_vertex2 to each respective input
    */
   @ParameterizedTest
@@ -58,7 +60,9 @@ public class TestEdgeShape {
   }
 
   /*
-  raycast should return false if two input vectors are parallel
+  Blackbox error guessing
+  Property-Based Testing
+  raycast should return false (fail) if two input vectors are parallel
    */
   @Test
   public void testRayCastParallelVectors() {
@@ -83,5 +87,333 @@ public class TestEdgeShape {
     assertFalse(edge.raycast(output, input, trans, 1));
   }
 
+  /*
+  Whitebox Testing, Branch Coverage
+   */
+  @Test
+  public void testRayCastInvalidVectors1() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
 
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = 0.2f;
+    vec1.y = 0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = -0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+   Whitebox Testing, Branch Coverage
+  */
+  @Test
+  public void testRayCastInvalidVectors2() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = -0.2f;
+    vec1.y = -0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = -0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+   Whitebox Testing, Branch Coverage
+  */
+  @Test
+  public void testRayCastInvalidVectors3() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = -0.2f;
+    vec1.y = -0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.1f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+    Whitebox Testing, Branch Coverage
+   */
+  @Test
+  public void testRayCastInvalidVectors4() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = 0.2f;
+    vec1.y = 0.2f;
+    vec2.x = 0.1f;
+    vec2.y = 0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = -1f;
+    vec3.y = -1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = -0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+  Whitebox testing
+   */
+  @Test
+  public void testRayCastInvalidVectors5() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = -0.2f;
+    vec1.y = -0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.4f;
+    vec3.y = 0.4f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.1f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+Whitebox testing
+ */
+  @Test
+  public void testRayCastInvalidVectors6() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = -0.2f;
+    vec1.y = -0.2f;
+    vec2.x = 0.1f;
+    vec2.y = -0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.4f;
+    vec3.y = 0.4f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.5f;
+    vec4.y = 0.5f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertFalse(edge.raycast(output, input, trans, 1));
+  }
+
+  /*
+    Whitebox Testing, Branch Coverage
+ */
+  @Test
+  public void testRayCastValidVector1() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = 0.2f;
+    vec1.y = 0.2f;
+    vec2.x = 0.1f;
+    vec2.y = 0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.1f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.0f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertTrue(edge.raycast(output, input, trans, 1));
+    assertEquals(1.000000, output.fraction);
+    assertEquals(0.000000, output.normal.x);
+    assertEquals(1.000000, output.normal.y);
+  }
+
+  /*
+  Whitebox Testing, Branch Coverage
+*/
+  @Test
+  public void testRayCastValidVector2() {
+    Vec2 vec1 = new Vec2();
+    Vec2 vec2 = new Vec2();
+    Vec2 tr = new Vec2();
+    Rot ro = new Rot();
+    ro.s = 0;
+    ro.c = 1;
+
+    Transform trans = new Transform(tr, ro);
+
+    vec1.x = 0.2f;
+    vec1.y = 0.2f;
+    vec2.x = 0.1f;
+    vec2.y = 0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.2f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.2f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+    RayCastOutput output = new RayCastOutput();
+    RayCastInput input = new RayCastInput();
+    input.p1.set(vec1);
+    input.p2.set(vec2);
+
+    assertTrue(edge.raycast(output, input, trans, 1));
+    assertEquals(0.500000, output.fraction);
+    assertEquals(0.7071067690849304, output.normal.x);
+    assertEquals(0.7071067690849304, output.normal.y);
+  }
+
+  /*
+  There is literally no way to test computeAABB, the function is invisible,
+  does nothing
+   */
+
+  /*
+  Whitebox testing
+   */
+  @Test
+  public void testcomputeMass() {
+    MassData mass = new MassData();
+    mass.mass = 0.1f;
+    mass.I = 0.1f;
+
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.2f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.2f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+
+    edge.computeMass(mass, 1);
+
+    assertEquals(0f, mass.mass);
+    assertEquals(0f, mass.I);
+    assertEquals(0.15f, mass.center.x);
+    assertEquals(0.15f, mass.center.y);
+  }
+
+  /*
+  Blackbox testing, clone() should return an object with the
+  same values as the thing that is being cloned
+   */
+  @Test
+  public void testClone() {
+    Vec2 vec3 = new Vec2();
+    vec3.x = 0.1f;
+    vec3.y = 0.2f;
+    Vec2 vec4 = new Vec2();
+    vec4.x = 0.2f;
+    vec4.y = 0.1f;
+    edge.set(vec3, vec4);
+    edge.m_vertex3.set(vec3);
+    edge.m_vertex0.set(vec3);
+    EdgeShape edgeClone = (EdgeShape) edge.clone();
+    assertEquals(edge.m_vertex0, edgeClone.m_vertex0);
+    assertEquals(edge.m_vertex1, edgeClone.m_vertex1);
+    assertEquals(edge.m_vertex2, edgeClone.m_vertex2);
+    assertEquals(edge.m_vertex3, edgeClone.m_vertex3);
+  }
 }
