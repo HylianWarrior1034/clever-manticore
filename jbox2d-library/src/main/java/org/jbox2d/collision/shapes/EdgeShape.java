@@ -140,7 +140,7 @@ public class EdgeShape extends Shape {
     final float ry = v2.y - v1.y;
     final float rr = rx * rx + ry * ry;
 
-    // unreachable, for rr == 0.0f, rx = ry = 0.
+    // unreachable, for rr == 0.0f to be true, rx = ry = 0.
     // This is checked in denominator == 0.0f at the beginning.
     if (rr == 0.0f) {
       return false;
