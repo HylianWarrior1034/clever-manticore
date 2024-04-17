@@ -62,7 +62,7 @@ public class TestEdgeShape {
   /*
   Blackbox error guessing
   Property-Based Testing
-  raycast should return false if two input vectors are parallel
+  raycast should return false (fail) if two input vectors are parallel
    */
   @Test
   public void testRayCastParallelVectors() {
