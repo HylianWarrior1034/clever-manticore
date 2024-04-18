@@ -1,18 +1,17 @@
 package SoftwareTestingUnitTests;
 
 import org.jbox2d.collision.AABB;
-import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.RayCastInput;
+import org.jbox2d.collision.RayCastOutput;
+import org.jbox2d.collision.shapes.MassData;
 import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.common.Rot;
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -164,50 +163,148 @@ public class TestPolygonShape {
     }
 
     // Testing: raycast()
-    // TODO
-
-    // Testing: computeCentroidToOut()
-    // TODO
-
-    // Testing: computeMass()
-    // TODO
-
-    // Testing: validate()
-    // TODO
-
-    // Testing: getVertices()
-    // TODO
-
-    // Testing: getNormals()
-    // TODO
-
-    // Testing: centroid()
-    // TODO
-
+    // TODO: do EP here
+    private static Stream<Arguments> testRaycastArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,1), true)
+        );
+    }
 
     @ParameterizedTest
-    @CsvSource({"-1, -1", "-1, 0", "-1, 1", "0, -1", "0, 0", "0, 1", "1, -1", "1, 0", "1, 1"})
-    public void testCentroid(float x, float y) {
+    @MethodSource("testRaycastArgs")
+    public void testRaycast(Vec2[] vertices, Vec2 raycastStart, Vec2 raycastEnd, boolean rayHitsShape) {
+        RayCastInput rayCastInput = new RayCastInput();
+        rayCastInput.p1.x = raycastStart.x;
+        rayCastInput.p1.y = raycastStart.y;
+        rayCastInput.p2.x = raycastEnd.x;
+        rayCastInput.p2.y = raycastEnd.y;
+        rayCastInput.maxFraction = 10;
+        final Transform transform = new Transform();
+        transform.setIdentity();
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.m_centroid.set(x, y);
-        Transform trans = new Transform();
-        Rot rot = new Rot();
-        rot.s = 1;
-        rot.c = 0;
-        Vec2 ret = polygonShape.centroid(trans);
-        System.out.printf("%f %f\n", ret.x, ret.y);
+        polygonShape.set(vertices, vertices.length);
+        RayCastOutput rayCastOutput = new RayCastOutput();
+        assertEquals(rayHitsShape, polygonShape.raycast(rayCastOutput, rayCastInput, transform, 0));
+    }
+
+    // Testing: computeCentroidToOut()
+    // TODO: do EP here
+    private static Stream<Arguments> testComputeCentroidToOutArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(1,1))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testComputeCentroidToOutArgs")
+    public void testComputeCentroidToOut(Vec2[] vertices, Vec2 centroid) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        Vec2 computedCentroid = new Vec2();
+        polygonShape.computeCentroidToOut(polygonShape.m_vertices, polygonShape.m_count, computedCentroid);
+        assertEquals(centroid, computedCentroid);
+    }
+
+    // Testing: computeMass()
+    // TODO: do EP here
+    private static Stream<Arguments> testComputeMassArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, 1, new Vec2(1,1), 4)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testComputeMassArgs")
+    public void testComputeMass(Vec2[] vertices, float density, Vec2 center, float mass) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        MassData computedMassData = new MassData();
+        polygonShape.computeMass(computedMassData, density);
+        assertEquals(computedMassData.center, center);
+        assertEquals(computedMassData.mass, mass, 1e-5);
+    }
+
+    // Testing: validate()
+    // TODO: do EP here
+    private static Stream<Arguments> testValidateArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testValidateArgs")
+    public void testValidate(Vec2[] vertices, boolean isConvex) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        assertEquals(isConvex, polygonShape.validate());
+    }
+
+    // Testing: getVertices()
+    // TODO: do EP here
+    private static Stream<Arguments> testGetVerticesArgs() {
+        return Stream.of(
+                Arguments.of((Object) new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testGetVerticesArgs")
+    public void testGetVertices(Vec2[] vertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        assertEquals(polygonShape.m_vertices, polygonShape.getVertices());
+    }
+
+    // Testing: getNormals()
+    private static Stream<Arguments> testGetNormalsArgs() {
+        return Stream.of(
+                Arguments.of((Object) new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testGetNormalsArgs")
+    public void testGetNormals(Vec2[] vertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        assertEquals(polygonShape.m_normals, polygonShape.getNormals());
+    }
+
+    // Testing: centroid()
+    private static Stream<Arguments> testCentroidArgs() {
+        return Stream.of(
+                Arguments.of((Object) new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(1,1))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCentroidArgs")
+    public void testCentroid(Vec2[] vertices, Vec2 centroid) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        final Transform transform = new Transform();
+        transform.setIdentity();
+        assertEquals(centroid, polygonShape.centroid(transform));
     }
 
     // Testing: centroidToOut()
-    // TODO
+    // TODO: do EP here
+    private static Stream<Arguments> testCentroidToOut() {
+        return Stream.of(
+                Arguments.of((Object) new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)})
+        );
+    }
+
     @ParameterizedTest
-    @MethodSource("testGetVertexArgs")
-    public void testCentroidToOut() {
-        final Vec2 out = new Vec2();
-        Transform trans = new Transform();
-        Rot rot = new Rot();
-        rot.s = 1;
-        rot.c = 0;
-//        assertEquals();
+    @MethodSource("testCentroidToOut")
+    public void testCentroidToOut(Vec2[] vertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        final Transform transform = new Transform();
+        transform.setIdentity();
+        Vec2 computedCentroid = new Vec2();
+        polygonShape.centroidToOut(transform, computedCentroid);
+        assertEquals(polygonShape.m_centroid, computedCentroid);
     }
 }
