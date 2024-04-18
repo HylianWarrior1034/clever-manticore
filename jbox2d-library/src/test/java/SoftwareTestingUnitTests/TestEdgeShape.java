@@ -1,4 +1,5 @@
 package SoftwareTestingUnitTests;
+import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.RayCastInput;
 import org.jbox2d.collision.RayCastOutput;
 import org.jbox2d.collision.shapes.EdgeShape;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static org.jbox2d.common.MathUtils.round;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestEdgeShape {
@@ -365,10 +367,40 @@ Whitebox testing
     assertEquals(0.7071067690849304, output.normal.y);
   }
 
-  /*
-  There is literally no way to test computeAABB, the function is invisible,
-  does nothing
-   */
+  @Test
+  public void testComputeAABBValid1() {
+    AABB aabb = new AABB();
+    edge.set(new Vec2(0.1f, 0.2f), new Vec2(0.2f, 0.1f));
+    Rot rot = new Rot();
+    Transform trans = new Transform();
+    trans.q.set(rot);
+    trans.p.set(new Vec2());
+    rot.c = 0;
+    rot.s = 1;
+    edge.computeAABB(aabb, trans, 1);
+    assertEquals(0.09000000357627869, aabb.lowerBound.x);
+    assertEquals(0.09000000357627869, aabb.lowerBound.y);
+    assertEquals(0.21000000834465027, aabb.upperBound.x);
+    assertEquals(0.21000000834465027, aabb.upperBound.x);
+  }
+
+  @Test
+  public void testComputeAABBValid2() {
+    AABB aabb = new AABB();
+    edge.set(new Vec2(0.2f, 0.1f), new Vec2(0.1f, 0.2f));
+    Rot rot = new Rot();
+    Transform trans = new Transform();
+    trans.q.set(rot);
+    trans.p.set(new Vec2());
+    rot.c = 0;
+    rot.s = 1;
+    edge.computeAABB(aabb, trans, 1);
+    assertEquals(0.09000000357627869, aabb.lowerBound.x);
+    assertEquals(0.09000000357627869, aabb.lowerBound.y);
+    assertEquals(0.21000000834465027, aabb.upperBound.x);
+    assertEquals(0.21000000834465027, aabb.upperBound.x);
+  }
+
 
   /*
   Whitebox testing
