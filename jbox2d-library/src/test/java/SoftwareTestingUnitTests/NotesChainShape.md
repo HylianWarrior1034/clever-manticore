@@ -12,11 +12,11 @@ Fields inherited from Shape :
 Empty chain shape has these fields:
     `Vec2[] m_vertices` :  These are the vertices the chain is made up of. An empty chain will have none. A chain with a single segment will have two. A chain with three will have four. Chain of N edges will have N+1 vertices for all N>0.
     `int m_count` : keeps track on the number of segments in the chain
-    `final Vec2 m_prevVertex`: ???
-    `final Vec2 m_nextVertex`: ???
+    `final Vec2 m_prevVertex`: ??? this is set for loops
+    `final Vec2 m_nextVertex`: ??? this is set for loops
     `boolean m_hasPrevVertex` : clear
     `boolean m_hasNexVertex` : clear
-    `final EdgeShape pool0` : ???
+    `final EdgeShape pool0` : ??? this may be the resulting normal for raycasting function ??? maybe 
 
 `getChildEdge(EdgeShape edge, int index)`: Get a child EdgeShape segment from the chain. If the chain has one segment, there is no child edge. Since number of segments is `m_count`, index of child has to be 1 less. Index has to be non-negative. 
 
