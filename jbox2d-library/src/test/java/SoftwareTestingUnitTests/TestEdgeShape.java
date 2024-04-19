@@ -367,6 +367,12 @@ Whitebox testing
     assertEquals(0.7071067690849304, output.normal.y);
   }
 
+
+  /*
+  There is literally no way to test computeAABB, the function is invisible,
+  does nothing
+   */
+
   @Test
   public void testComputeAABBValid1() {
     AABB aabb = new AABB();
@@ -400,6 +406,7 @@ Whitebox testing
     assertEquals(0.21000000834465027, aabb.upperBound.x);
     assertEquals(0.21000000834465027, aabb.upperBound.x);
   }
+
 
 
   /*

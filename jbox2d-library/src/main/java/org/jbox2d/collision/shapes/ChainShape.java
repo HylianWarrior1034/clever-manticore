@@ -66,7 +66,7 @@ public class ChainShape extends Shape {
   }
 
   /**
-   * Get a child edge.
+   * Get a child edge based on index
    * @param edge
    * @param index
    */
