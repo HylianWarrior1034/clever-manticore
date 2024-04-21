@@ -6,6 +6,7 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.EdgeShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.common.Settings;
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.pooling.normal.DefaultWorldPool;
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCollision {
@@ -33,7 +35,6 @@ public class TestCollision {
     }
 
     // Testing: testOverlap()
-    // TODO: EP
     private static Stream<Arguments> testTestOverlapArgs() {
         // Arguments: circle rad, circle x, circle y, box hx, box hy, isOverlaping
         return Stream.of(
@@ -54,14 +55,25 @@ public class TestCollision {
     }
 
     // Testing: getPointStates()
-    // TODO: complete this test
     private static Stream<Arguments> testGetPointStatesArgs() {
         return Stream.of(
+                Arguments.of(1, 0, 0, new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)})
         );
     }
     @ParameterizedTest
     @MethodSource("testGetPointStatesArgs")
-    public void testGetPointStates() {
+    public void testGetPointStates(float circle_rad, float circle_x, float circle_y, Vec2[] vertices) {
+        Collision.PointState[] state1 = new Collision.PointState[Settings.maxManifoldPoints];
+        Collision.PointState[] state2 = new Collision.PointState[Settings.maxManifoldPoints];
+        CircleShape circle = new CircleShape();
+        circle.m_radius = circle_rad;
+        circle.m_p.x = circle_x;
+        circle.m_p.y = circle_y;
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        collision.collidePolygonAndCircle(manifold, polygonShape, identity, circle, identity);
+        Collision.getPointStates(state1, state2, manifold, manifold);
+        assertArrayEquals(state1, state2);
     }
 
     // Testing: clipSegmentToLine()
@@ -76,7 +88,6 @@ public class TestCollision {
     }
 
     // Testing: collideCircles()
-    // TODO: complete this test
     private static Stream<Arguments> testCollideCirclesArgs() {
         return Stream.of(
                 Arguments.of(1, 0, 0, 1, 0.5f, 0.5f, 1, Manifold.ManifoldType.CIRCLES),
@@ -95,7 +106,6 @@ public class TestCollision {
         circle2.m_p.x = circle2_x;
         circle2.m_p.y = circle2_y;
         collision.collideCircles(manifold, circle1, identity, circle2, identity);
-        // TODO: not sure what the expected output is suppose to be
         System.out.println(manifold.localNormal);
         System.out.println(manifold.points[0].localPoint);
         System.out.println(manifold.localPoint);
@@ -104,7 +114,6 @@ public class TestCollision {
     }
 
     // Testing: collidePolygonAndCircle()
-    // TODO: complete this test
     private static Stream<Arguments> testCollidePolygonAndCircleArgs() {
         return Stream.of(
                 Arguments.of(1, 0, 0, new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 1, Manifold.ManifoldType.FACE_A),
@@ -123,7 +132,6 @@ public class TestCollision {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set(vertices, vertices.length);
         collision.collidePolygonAndCircle(manifold, polygonShape, identity, circle, identity);
-        // TODO: not sure what the expected output is suppose to be
         System.out.println(manifold.localNormal);
         System.out.println(manifold.points[0].localPoint);
         System.out.println(manifold.localPoint);
@@ -132,25 +140,33 @@ public class TestCollision {
     }
 
     // Testing: edgeSeparation()
-    // TODO: complete this test
     private static Stream<Arguments> testEdgeSeparationArgs() {
         return Stream.of(
+                Arguments.of(
+                        new Vec2[]{new Vec2(0,0), new Vec2(1,0), new Vec2(0,1)},
+                        new Vec2[]{new Vec2(1,1), new Vec2(1,0), new Vec2(0,1)},
+                        0, 0
+                ),
+                Arguments.of(
+                        new Vec2[]{new Vec2(0,0), new Vec2(1,0), new Vec2(0,1)},
+                        new Vec2[]{new Vec2(1,1), new Vec2(1,0), new Vec2(0,1)},
+                        -1, 0
+                ),
+                Arguments.of(
+                        new Vec2[]{new Vec2(0,0), new Vec2(1,0), new Vec2(0,1)},
+                        new Vec2[]{new Vec2(1,1), new Vec2(1,0), new Vec2(0,1)},
+                        10000, 0
+                )
         );
     }
     @ParameterizedTest
     @MethodSource("testEdgeSeparationArgs")
-    public void testEdgeSeparation() {
-    }
-
-    // Testing: findMaxSeparation()
-    // TODO: complete this test
-    private static Stream<Arguments> testFindMaxSeparationArgs() {
-        return Stream.of(
-        );
-    }
-    @ParameterizedTest
-    @MethodSource("testFindMaxSeparationArgs")
-    public void testFindMaxSeparation() {
+    public void testEdgeSeparation(Vec2[] vertices1, Vec2[] vertices2, int index, float sep) {
+        PolygonShape polygonShape1 = new PolygonShape();
+        polygonShape1.set(vertices1, vertices1.length);
+        PolygonShape polygonShape2 = new PolygonShape();
+        polygonShape2.set(vertices2, vertices2.length);
+        assertEquals(sep, collision.edgeSeparation(polygonShape1, identity, index, polygonShape2, identity), 1e-5);
     }
 
     // Testing: findIncidentEdge()
@@ -165,7 +181,6 @@ public class TestCollision {
     }
 
     // Testing: collidePolygons()
-    // TODO: complete this test
     private static Stream<Arguments> testCollidePolygonsArgs() {
         return Stream.of(
                 Arguments.of(
@@ -183,6 +198,39 @@ public class TestCollision {
                 Arguments.of(
                         new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)},
                         new Vec2[]{new Vec2(3, 0), new Vec2(3, 1), new Vec2(2, 1), new Vec2(2, 0)},
+                        0, null),
+                // Adding more tests for BC
+                Arguments.of(
+                        new Vec2[]{new Vec2(1, 0), new Vec2(0, 1), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(1, 0), new Vec2(0, 1), new Vec2(1, 1)},
+                        2, Manifold.ManifoldType.FACE_A),
+                Arguments.of(
+                        new Vec2[]{new Vec2(1, 0), new Vec2(0, 1), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(1.01f, 0), new Vec2(0, 1.01f), new Vec2(1, 1)},
+                        2, Manifold.ManifoldType.FACE_A),
+                Arguments.of(
+                        new Vec2[]{new Vec2(1, 0), new Vec2(0, 1), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(1.1f, 0), new Vec2(0, 1.1f), new Vec2(1, 1)},
+                        0, null),
+                Arguments.of(
+                        new Vec2[]{new Vec2(1, 0), new Vec2(0, 1), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(1.01f, 0), new Vec2(0, 1.01f), new Vec2(1, 1)},
+                        0, null),
+                Arguments.of(
+                        new Vec2[]{new Vec2(1, 0), new Vec2(0, 1), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(0.99f, 0.01f), new Vec2(0.01f, 0.99f), new Vec2(1, 1)},
+                        2, Manifold.ManifoldType.FACE_A),
+                Arguments.of(
+                        new Vec2[]{new Vec2(100, 0), new Vec2(0, 100), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(99f, 1f), new Vec2(1f, 99f), new Vec2(100, 100)},
+                        2, Manifold.ManifoldType.FACE_A),
+                Arguments.of(
+                        new Vec2[]{new Vec2(100, 0), new Vec2(0, 100), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(101f, 0), new Vec2(0, 101f), new Vec2(100, 100)},
+                        0, null),
+                Arguments.of(
+                        new Vec2[]{new Vec2(100, 0), new Vec2(0, 100), new Vec2(0, 0)},
+                        new Vec2[]{new Vec2(100f, 100f), new Vec2(1001, 101f), new Vec2(100, 101)},
                         0, null)
         );
     }
@@ -194,7 +242,20 @@ public class TestCollision {
         PolygonShape polygonShape2 = new PolygonShape();
         polygonShape2.set(vertices2, vertices2.length);
         collision.collidePolygons(manifold, polygonShape1, identity, polygonShape2, identity);
-        // TODO: not sure what the expected output is suppose to be
+        System.out.println(manifold.localNormal);
+        System.out.println(manifold.points[0].localPoint);
+        System.out.println(manifold.localPoint);
+        assertEquals(pointCount, manifold.pointCount);
+        assertEquals(manifoldType, manifold.type);
+    }
+    @ParameterizedTest
+    @MethodSource("testCollidePolygonsArgs")
+    public void testCollidePolygonsFlipped(Vec2[] vertices1, Vec2[] vertices2, int pointCount, Manifold.ManifoldType manifoldType) {
+        PolygonShape polygonShape1 = new PolygonShape();
+        polygonShape1.set(vertices1, vertices1.length);
+        PolygonShape polygonShape2 = new PolygonShape();
+        polygonShape2.set(vertices2, vertices2.length);
+        collision.collidePolygons(manifold, polygonShape2, identity, polygonShape1, identity);
         System.out.println(manifold.localNormal);
         System.out.println(manifold.points[0].localPoint);
         System.out.println(manifold.localPoint);
@@ -233,7 +294,6 @@ public class TestCollision {
         edgeShape.m_hasVertex0 = true;
         edgeShape.m_hasVertex3 = true;
         collision.collideEdgeAndCircle(manifold, edgeShape, identity, circle, identity);
-        // TODO: not sure what the expected output is suppose to be
         System.out.println(manifold.localNormal);
         System.out.println(manifold.points[0].localPoint);
         System.out.println(manifold.localPoint);
@@ -252,7 +312,6 @@ public class TestCollision {
         EdgeShape edgeShape = new EdgeShape();
         edgeShape.set(edgeStart, edgeEnd);
         collision.collideEdgeAndCircle(manifold, edgeShape, identity, circle, identity);
-        // TODO: not sure what the expected output is suppose to be
         System.out.println(manifold.localNormal);
         System.out.println(manifold.points[0].localPoint);
         System.out.println(manifold.localPoint);
@@ -302,16 +361,5 @@ public class TestCollision {
     @ParameterizedTest
     @MethodSource("testComputeEdgeSeparationArgs")
     public void testComputeEdgeSeparation() {
-    }
-
-    // Testing: computePolygonSeparation()
-    // TODO: complete this test
-    private static Stream<Arguments> testComputePolygonSeparationArgs() {
-        return Stream.of(
-        );
-    }
-    @ParameterizedTest
-    @MethodSource("testComputePolygonSeparationArgs")
-    public void testComputePolygonSeparation() {
     }
 }
