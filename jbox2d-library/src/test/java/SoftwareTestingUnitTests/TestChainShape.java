@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * its children have the next vertex if any.
  */
 public class TestChainShape {
-  // Testing: clone()
   private ChainShape chain;
 
   private final Vec2[] basicVertices = new Vec2[] {

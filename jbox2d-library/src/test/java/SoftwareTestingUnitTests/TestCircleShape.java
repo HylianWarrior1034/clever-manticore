@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static java.lang.Float.MIN_VALUE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCircleShape {
@@ -129,7 +130,10 @@ public class TestCircleShape {
                 // raycast start inside of circle
                 Arguments.of(new Vec2(0.5f,0.5f), new Vec2(0,0), 1, true),
                 Arguments.of(new Vec2(0.5f,0.5f), new Vec2(-10,-10), 1, true),
-                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(100,0), 1, true)
+                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(100,0), 1, true),
+
+                // Adding BC tests
+                Arguments.of(new Vec2(1f-2*MIN_VALUE,1f-2*MIN_VALUE), new Vec2(1f-MIN_VALUE,1f-MIN_VALUE), 1f, true)
         );
     }
 

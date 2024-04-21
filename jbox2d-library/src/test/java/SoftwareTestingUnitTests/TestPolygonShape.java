@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.lang.Float.MIN_NORMAL;
 import static org.junit.jupiter.api.Assertions.*;
 public class TestPolygonShape {
     // Testing: clone()
@@ -50,9 +51,15 @@ public class TestPolygonShape {
     // Testing: set()
     // TODO: do EP here
     private static Stream<Arguments> testSetArgs() {
+        // BC: added tests for branch coverage
         return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4)
-        );
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4),
+                Arguments.of(new Vec2[]{}, 0),
+                Arguments.of(new Vec2[]{new Vec2(0,0)}, 1),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(0.5f,0.5f)}, 5),
+                Arguments.of(new Vec2[]{new Vec2(0, 1), new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 0)}, 4),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(0.5f,0.5f)}, 5)
+                );
     }
 
     @ParameterizedTest
@@ -80,6 +87,26 @@ public class TestPolygonShape {
     public void testSetAsBox(float halfX, float halfY, Vec2[] expectedVertices) {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(halfX, halfY);
+        assertEquals(4, polygonShape.m_count);
+        Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, 4);
+        List<Vec2> verticesList = Arrays.asList(expectedVertices);
+        List<Vec2> polygonVerticesList = Arrays.asList(polygonVertices);
+        assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
+    }
+
+    // Testing: setAsBox()
+    // TODO: do EP here
+    private static Stream<Arguments> testSetAsBoxArgsWithCenterArgs() {
+        return Stream.of(
+                Arguments.of(1f, 1f, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSetAsBoxArgsWithCenterArgs")
+    public void testSetAsBoxArgsWithCenter(float halfX, float halfY, Vec2[] expectedVertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(halfX, halfY, new Vec2(0,0), 0);
         assertEquals(4, polygonShape.m_count);
         Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, 4);
         List<Vec2> verticesList = Arrays.asList(expectedVertices);
@@ -165,8 +192,12 @@ public class TestPolygonShape {
     // Testing: raycast()
     // TODO: do EP here
     private static Stream<Arguments> testRaycastArgs() {
+        //Adding BC test here
         return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,1), true)
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,1), true),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-1f,0), false),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(1f,1), true),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(1,1), new Vec2(2f,1), false)
         );
     }
 
@@ -209,13 +240,16 @@ public class TestPolygonShape {
     // TODO: do EP here
     private static Stream<Arguments> testComputeMassArgs() {
         return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, 1, new Vec2(1,1), 4)
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, 1, new Vec2(1,1), 4),
+                Arguments.of(new Vec2[]{new Vec2(2, 0)}, 1, new Vec2(1,1), 0),
+                Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(MIN_NORMAL, 0), new Vec2(0, MIN_NORMAL)}, 1, new Vec2(1,1), 0)
         );
     }
 
     @ParameterizedTest
     @MethodSource("testComputeMassArgs")
     public void testComputeMass(Vec2[] vertices, float density, Vec2 center, float mass) {
+        //Adding BC test here
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set(vertices, vertices.length);
         MassData computedMassData = new MassData();
@@ -227,8 +261,10 @@ public class TestPolygonShape {
     // Testing: validate()
     // TODO: do EP here
     private static Stream<Arguments> testValidateArgs() {
+        //Adding BC test here
         return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, true)
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, true),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(0.1f, 0.1f), new Vec2(0, 2), new Vec2(0, 0)}, false)
         );
     }
 
