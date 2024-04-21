@@ -79,11 +79,10 @@ public class TestPolygonShape {
 
     @ParameterizedTest
     @MethodSource("testSetInvalidArgs")
-    public void testSetInvalid() {
-        Vec2[] vertices = new Vec2[]{new Vec2(1, 1), new Vec2(1, 1), new Vec2(1, 1), new Vec2(1, 1)};
+    public void testSetInvalid(Vec2[] vertices, int count) {
         PolygonShape polygonShape = new PolygonShape();
         try {
-            polygonShape.set(vertices, 4);
+            polygonShape.set(vertices, count);
         } catch (AssertionError e) {
             return;
         }
@@ -91,13 +90,18 @@ public class TestPolygonShape {
     }
 
     // Testing: setAsBox()
-    // TODO: do EP here
+    // EP: zero || positive values for x and y.
     private static Stream<Arguments> testSetAsBoxArgs() {
         return Stream.of(
+                Arguments.of(0f, 0f, new Vec2[]{new Vec2(0,0), new Vec2(0,0), new Vec2(0,0), new Vec2(0,0),}),
+                Arguments.of(0f, 1f, new Vec2[]{new Vec2(0,1), new Vec2(0,-1), new Vec2(0,1), new Vec2(0,-1),}),
+                Arguments.of(1f, 0f, new Vec2[]{new Vec2(1,0), new Vec2(1,-0), new Vec2(-1,0), new Vec2(-1,0),}),
                 Arguments.of(1f, 1f, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),})
         );
     }
 
+    // Putting halfX or halfY as zero should fail, but it does not
+    // The tests fail even when all the value are equal?? 0.0 and -0.0 are different somehow...??
     @ParameterizedTest
     @MethodSource("testSetAsBoxArgs")
     public void testSetAsBox(float halfX, float halfY, Vec2[] expectedVertices) {
@@ -110,10 +114,35 @@ public class TestPolygonShape {
         assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
     }
 
+    // EP: Center is in each of the four quadrants, and at (0, 0)
+    private static Stream<Arguments> testSetAsBoxArgs2() {
+        return Stream.of(
+                Arguments.of(1f, 1f, new Vec2(0, 0), 0, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),}),
+                Arguments.of(1f, 1f, new Vec2(1, 0), 0, new Vec2[]{new Vec2(2,1), new Vec2(0,-1), new Vec2(0,1), new Vec2(2,-1),}),
+                Arguments.of(1f, 1f, new Vec2(-1, 0), 0, new Vec2[]{new Vec2(0,1), new Vec2(-2,-1), new Vec2(-2,1), new Vec2(0,-1),}),
+                Arguments.of(1f, 1f, new Vec2(0, 1), 0, new Vec2[]{new Vec2(1,0), new Vec2(1,2), new Vec2(-1,0), new Vec2(-1,2),}),
+                Arguments.of(1f, 1f, new Vec2(0, -1), 0, new Vec2[]{new Vec2(1,-2), new Vec2(1,0), new Vec2(-1,-2), new Vec2(-1,0),})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSetAsBoxArgs2")
+    public void testSetAsBox2(float halfX, float halfY, Vec2 center, float angle, Vec2[] expectedVertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(halfX, halfY, center, angle);
+        assertEquals(4, polygonShape.m_count);
+        Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, 4);
+        List<Vec2> verticesList = Arrays.asList(expectedVertices);
+        List<Vec2> polygonVerticesList = Arrays.asList(polygonVertices);
+        assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
+    }
+
     // Testing: testPoint()
-    // TODO: do EP here
+    // Boundary Testing: Test a point that is inside the polygon, on the very end of polygon, and outside the polygon
     private static Stream<Arguments> testTestPointArgs() {
         return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, new Vec2(2,0), false),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, new Vec2(0,0), true),
                 Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, new Vec2(0,0), true)
         );
     }
@@ -129,9 +158,10 @@ public class TestPolygonShape {
     }
 
     // Testing: computeAABB()
-    // TODO: perform EP here
+    // These inputs should cover all branches
     private static Stream<Arguments> testComputeAABBArgs() {
         return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(1, 0), new Vec2(-1, 1), new Vec2(1, 0)}, 4, -1, 0, 1, 1),
                 Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4, 0, 0, 1, 1)
         );
     }
