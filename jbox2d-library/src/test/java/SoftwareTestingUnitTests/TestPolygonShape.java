@@ -48,10 +48,12 @@ public class TestPolygonShape {
     }
 
     // Testing: set()
-    // TODO: do EP here
+    // EP: polygons with 3 vertices, 4 vertices, and more than 4 vertices
     private static Stream<Arguments> testSetArgs() {
         return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4)
+                Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(0, 1), new Vec2(1, 1)}, 3),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(2, 2)}, 5)
         );
     }
 
@@ -65,6 +67,27 @@ public class TestPolygonShape {
         List<Vec2> verticesList = Arrays.asList(vertices);
         List<Vec2> polygonVerticesList = Arrays.asList(polygonVertices);
         assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
+    }
+
+    private static Stream<Arguments> testSetInvalidArgs() {
+        return Stream.of(
+                Arguments.of(new Vec2[]{new Vec2(0, 0)}, 1),
+                Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(0, 1)}, 2),
+                Arguments.of(new Vec2[]{new Vec2(1, 1), new Vec2(1, 1), new Vec2(1, 1), new Vec2(1, 1)}, 4)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSetInvalidArgs")
+    public void testSetInvalid() {
+        Vec2[] vertices = new Vec2[]{new Vec2(1, 1), new Vec2(1, 1), new Vec2(1, 1), new Vec2(1, 1)};
+        PolygonShape polygonShape = new PolygonShape();
+        try {
+            polygonShape.set(vertices, 4);
+        } catch (AssertionError e) {
+            return;
+        }
+        fail("Error not caught");
     }
 
     // Testing: setAsBox()
