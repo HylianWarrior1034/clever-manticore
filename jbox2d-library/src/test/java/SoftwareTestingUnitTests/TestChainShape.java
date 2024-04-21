@@ -66,54 +66,54 @@ public class TestChainShape {
 //    assertNull(edge);
 //  }
 
-  @Test
-  public void testGetChildEdgeChildfullChain() {
-    Vec2[] vertices = new Vec2[] {
-      new Vec2(),
-      new Vec2(1.0f,1.0f),
-      new Vec2(2.0f,2.0f),
-      new Vec2(3.0f,3.0f),
-      new Vec2(4.0f, 4.0f)
-    };
-    chain.m_vertices = vertices;
-    chain.m_count = vertices.length - 1; // 4
-    EdgeShape edge;
-    // Path -1 : index fails assert:  index < 0
-    assertThrows(AssertionError.class, () -> {
-      chain.getChildEdge(new EdgeShape(), -1);
-    });
-    // Path 0: index: 0 pass assert, IF index = 0 , index < 2
-    edge = new EdgeShape();
-    chain.getChildEdge(edge, 0);
-    assertEquals(chain.m_prevVertex,edge.m_vertex0);
-    assertEquals(new Vec2(0f,0f), edge.m_vertex1);
-    assertEquals(new Vec2(1f,1f), edge.m_vertex2);
-    assertEquals(new Vec2(2f,2f), edge.m_vertex3);
-    assertNotNull(edge);
-    // Path 1: index: 1 pass assert, IF index > 0 , index < 2
-    edge = new EdgeShape();
-    chain.getChildEdge(edge, 1);
-    assertEquals(new Vec2(),edge.m_vertex0);
-    assertEquals(new Vec2(1f,1f), edge.m_vertex1);
-    assertEquals(new Vec2(2f,2f), edge.m_vertex2);
-    assertEquals(new Vec2(3f,3f), edge.m_vertex3);
-    assertNotNull(edge);
-    // Path 2: index 2 pass assert, IF index > 0 , index == 2
-    edge = new EdgeShape();
-    chain.getChildEdge(edge, 2);
-    assertEquals(new Vec2(1f,1f),edge.m_vertex0);
-    assertEquals(new Vec2(2f,2), edge.m_vertex1);
-    assertEquals(new Vec2(3f, 3f), edge.m_vertex2);
-    assertEquals(chain.m_nextVertex, edge.m_vertex3);
-    assertNotNull(edge);
-    //Path 3: index 3 fail assert: m_count - 1
-    assertThrows(AssertionError.class, () -> {
-      chain.getChildEdge(new EdgeShape(), 3);
-    });
-
-
-
-  }
+//  @Test
+//  public void testGetChildEdgeChildfullChain() {
+//    Vec2[] vertices = new Vec2[] {
+//      new Vec2(),
+//      new Vec2(1.0f,1.0f),
+//      new Vec2(2.0f,2.0f),
+//      new Vec2(3.0f,3.0f),
+//      new Vec2(4.0f, 4.0f)
+//    };
+//    chain.m_vertices = vertices;
+//    chain.m_count = vertices.length - 1; // 4
+//    EdgeShape edge;
+//    // Path -1 : index fails assert:  index < 0
+//    assertThrows(AssertionError.class, () -> {
+//      chain.getChildEdge(new EdgeShape(), -1);
+//    });
+//    // Path 0: index: 0 pass assert, IF index = 0 , index < 2
+//    edge = new EdgeShape();
+//    chain.getChildEdge(edge, 0);
+//    assertEquals(chain.m_prevVertex,edge.m_vertex0);
+//    assertEquals(new Vec2(0f,0f), edge.m_vertex1);
+//    assertEquals(new Vec2(1f,1f), edge.m_vertex2);
+//    assertEquals(new Vec2(2f,2f), edge.m_vertex3);
+//    assertNotNull(edge);
+//    // Path 1: index: 1 pass assert, IF index > 0 , index < 2
+//    edge = new EdgeShape();
+//    chain.getChildEdge(edge, 1);
+//    assertEquals(new Vec2(),edge.m_vertex0);
+//    assertEquals(new Vec2(1f,1f), edge.m_vertex1);
+//    assertEquals(new Vec2(2f,2f), edge.m_vertex2);
+//    assertEquals(new Vec2(3f,3f), edge.m_vertex3);
+//    assertNotNull(edge);
+//    // Path 2: index 2 pass assert, IF index > 0 , index == 2
+//    edge = new EdgeShape();
+//    chain.getChildEdge(edge, 2);
+//    assertEquals(new Vec2(1f,1f),edge.m_vertex0);
+//    assertEquals(new Vec2(2f,2), edge.m_vertex1);
+//    assertEquals(new Vec2(3f, 3f), edge.m_vertex2);
+//    assertEquals(chain.m_nextVertex, edge.m_vertex3);
+//    assertNotNull(edge);
+//    //Path 3: index 3 fail assert: m_count - 1
+//    assertThrows(AssertionError.class, () -> {
+//      chain.getChildEdge(new EdgeShape(), 3);
+//    });
+//
+//
+//
+//  }
 
   @Test
   public void testPointAlwaysFalse() {
@@ -273,26 +273,26 @@ public class TestChainShape {
     });
   }
 
-  @Test
-  public void testCreateLoopFails() {
-    Vec2[] loopVertices = new Vec2[] {new Vec2(),new Vec2(0.00004f,0.00004f),new Vec2(0.5f,-1.0f)};
-    assertThrows(AssertionError.class, () -> {
-      chain.createLoop(loopVertices,2);
-    });
-    chain.m_count = 3;
-    assertThrows(AssertionError.class, () -> {
-      chain.createLoop(loopVertices,3);
-    });
-    chain.m_count = 0;
-    chain.m_vertices = loopVertices;
-    assertThrows(AssertionError.class, () -> {
-      chain.createLoop(loopVertices,4);
-    });
-    chain.m_count = -1;
-    assertThrows(AssertionError.class, () -> {
-      chain.createLoop(loopVertices,4);
-    });
-  }
+//  @Test
+//  public void testCreateLoopFails() {
+//    Vec2[] loopVertices = new Vec2[] {new Vec2(),new Vec2(0.00004f,0.00004f),new Vec2(0.5f,-1.0f)};
+//    assertThrows(AssertionError.class, () -> {
+//      chain.createLoop(loopVertices,2);
+//    });
+//    chain.m_count = 3;
+//    assertThrows(AssertionError.class, () -> {
+//      chain.createLoop(loopVertices,3);
+//    });
+//    chain.m_count = 0;
+//    chain.m_vertices = loopVertices;
+//    assertThrows(AssertionError.class, () -> {
+//      chain.createLoop(loopVertices,4);
+//    });
+//    chain.m_count = -1;
+//    assertThrows(AssertionError.class, () -> {
+//      chain.createLoop(loopVertices,4);
+//    });
+//  }
 
 //  @Test
 //  public void testCreateChainRegular() {

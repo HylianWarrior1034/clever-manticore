@@ -300,7 +300,7 @@ Whitebox testing
   public void testRayCastValidVector1() {
     Vec2 vec1 = new Vec2();
     Vec2 vec2 = new Vec2();
-    Vec2 tr = new Vec2();
+    Vec2 tr = new Vec2(0.1f, 0.1f);
     Rot ro = new Rot();
     ro.s = 0;
     ro.c = 1;
@@ -325,7 +325,7 @@ Whitebox testing
     input.p2.set(vec2);
 
     assertTrue(edge.raycast(output, input, trans, 1));
-    assertEquals(1.000000, output.fraction);
+    assertEquals(-0.000000, output.fraction);
     assertEquals(0.000000, output.normal.x);
     assertEquals(1.000000, output.normal.y);
   }
@@ -339,22 +339,22 @@ Whitebox testing
     Vec2 vec2 = new Vec2();
     Vec2 tr = new Vec2();
     Rot ro = new Rot();
-    ro.s = 0;
-    ro.c = 1;
+    ro.c = -0.707f;
+    ro.s = 0.707f;
 
     Transform trans = new Transform(tr, ro);
 
-    vec1.x = 0.2f;
-    vec1.y = 0.2f;
+    vec1.x = 0.3f;
+    vec1.y = 0.3f;
     vec2.x = 0.1f;
-    vec2.y = 0.1f;
+    vec2.y = -0.1f;
 
     Vec2 vec3 = new Vec2();
-    vec3.x = 0.1f;
+    vec3.x = 0.3f;
     vec3.y = 0.2f;
     Vec2 vec4 = new Vec2();
-    vec4.x = 0.2f;
-    vec4.y = 0.1f;
+    vec4.x = -0.4f;
+    vec4.y = -0.4f;
     edge.set(vec3, vec4);
     RayCastOutput output = new RayCastOutput();
     RayCastInput input = new RayCastInput();
@@ -362,9 +362,9 @@ Whitebox testing
     input.p2.set(vec2);
 
     assertTrue(edge.raycast(output, input, trans, 1));
-    assertEquals(0.500000, output.fraction);
-    assertEquals(0.7071067690849304, output.normal.x);
-    assertEquals(0.7071067690849304, output.normal.y);
+    assertEquals(0.6730054020881653, output.fraction);
+    assertEquals(0.650791347026825, output.normal.x);
+    assertEquals(-0.7592566013336182, output.normal.y);
   }
 
 
@@ -381,13 +381,13 @@ Whitebox testing
     Transform trans = new Transform();
     trans.q.set(rot);
     trans.p.set(new Vec2());
-    rot.c = 0;
-    rot.s = 1;
+    rot.c = 1;
+    rot.s = 0;
     edge.computeAABB(aabb, trans, 1);
     assertEquals(0.09000000357627869, aabb.lowerBound.x);
     assertEquals(0.09000000357627869, aabb.lowerBound.y);
     assertEquals(0.21000000834465027, aabb.upperBound.x);
-    assertEquals(0.21000000834465027, aabb.upperBound.x);
+    assertEquals(0.21000000834465027, aabb.upperBound.y);
   }
 
   @Test
@@ -404,10 +404,8 @@ Whitebox testing
     assertEquals(0.09000000357627869, aabb.lowerBound.x);
     assertEquals(0.09000000357627869, aabb.lowerBound.y);
     assertEquals(0.21000000834465027, aabb.upperBound.x);
-    assertEquals(0.21000000834465027, aabb.upperBound.x);
+    assertEquals(0.21000000834465027, aabb.upperBound.y);
   }
-
-
 
   /*
   Whitebox testing
@@ -454,5 +452,56 @@ Whitebox testing
     assertEquals(edge.m_vertex1, edgeClone.m_vertex1);
     assertEquals(edge.m_vertex2, edgeClone.m_vertex2);
     assertEquals(edge.m_vertex3, edgeClone.m_vertex3);
+  }
+
+  @Test
+  public void testComputeAABBValid3() {
+    AABB aabb = new AABB();
+    edge.set(new Vec2(0.1f, 0.2f), new Vec2(0.2f, 0.1f));
+    Rot rot = new Rot();
+    Transform trans = new Transform();
+    trans.q.set(rot);
+    trans.p.set(new Vec2(0.1f, 0.1f));
+    rot.c = 0;
+    rot.s = 1;
+    edge.computeAABB(aabb, trans, 1);
+    assertEquals(0.1899999976158142, aabb.lowerBound.x);
+    assertEquals(0.1899999976158142, aabb.lowerBound.y);
+    assertEquals(0.3100000023841858, aabb.upperBound.x);
+    assertEquals(0.3100000023841858, aabb.upperBound.y);
+  }
+
+  @Test
+  public void testComputeAABBValid4() {
+    AABB aabb = new AABB();
+    edge.set(new Vec2(0.1f, 0.2f), new Vec2(0.2f, 0.1f));
+    Rot rot = new Rot();
+    rot.c = 0.707f;
+    rot.s = 0.707f;
+    Transform trans = new Transform();
+    trans.q.set(rot);
+    trans.p.set(new Vec2());
+    edge.computeAABB(aabb, trans, 1);
+    assertEquals(-0.08070000261068344, aabb.lowerBound.x);
+    assertEquals(0.20210000872612, aabb.lowerBound.y);
+    assertEquals(0.08070000261068344, aabb.upperBound.x);
+    assertEquals(0.22210001945495605, aabb.upperBound.y);
+  }
+
+  @Test
+  public void testComputeAABBValid5() {
+    AABB aabb = new AABB();
+    edge.set(new Vec2(0.1f, 0.2f), new Vec2(0.2f, 0.1f));
+    Rot rot = new Rot();
+    rot.c = 0.707f;
+    rot.s = 0.707f;
+    Transform trans = new Transform();
+    trans.q.set(rot);
+    trans.p.set(new Vec2(0.1f, 0.1f));
+    edge.computeAABB(aabb, trans, 1);
+    assertEquals(0.01929999701678753, aabb.lowerBound.x);
+    assertEquals(0.3021000325679779, aabb.lowerBound.y);
+    assertEquals(0.18070001900196075, aabb.upperBound.x);
+    assertEquals(0.3221000134944916, aabb.upperBound.y);
   }
 }

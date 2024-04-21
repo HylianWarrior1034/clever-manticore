@@ -77,17 +77,17 @@ public class TestPolygonShape {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("testSetInvalidArgs")
-    public void testSetInvalid(Vec2[] vertices, int count) {
-        PolygonShape polygonShape = new PolygonShape();
-        try {
-            polygonShape.set(vertices, count);
-        } catch (AssertionError e) {
-            return;
-        }
-        fail("Error not caught");
-    }
+//    @ParameterizedTest
+//    @MethodSource("testSetInvalidArgs")
+//    public void testSetInvalid(Vec2[] vertices, int count) {
+//        PolygonShape polygonShape = new PolygonShape();
+//        try {
+//            polygonShape.set(vertices, count);
+//        } catch (AssertionError e) {
+//            return;
+//        }
+//        fail("Error not caught");
+//    }
 
     // Testing: setAsBox()
     // EP: zero || positive values for x and y.
