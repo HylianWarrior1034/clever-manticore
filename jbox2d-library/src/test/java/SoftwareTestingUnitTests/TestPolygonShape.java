@@ -239,7 +239,7 @@ public class TestPolygonShape {
     public void testGetVertex(Vec2[] vertices, int count, int vertexIndex) {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set(vertices, count);
-        assertEquals(polygonShape.m_vertices[vertexIndex], polygonShape.getVertex(vertexIndex));
+        assertEquals(polygonShape.m_vertices[Math.abs(vertexIndex)], polygonShape.getVertex(vertexIndex));
     }
 
     // Testing: raycast()
