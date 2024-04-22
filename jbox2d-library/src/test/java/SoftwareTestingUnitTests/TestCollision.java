@@ -2,10 +2,8 @@ package SoftwareTestingUnitTests;
 
 import org.jbox2d.collision.Collision;
 import org.jbox2d.collision.Manifold;
-import org.jbox2d.collision.shapes.CircleShape;
-import org.jbox2d.collision.shapes.EdgeShape;
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.Rot;
 import org.jbox2d.common.Settings;
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
@@ -119,7 +117,14 @@ public class TestCollision {
                 Arguments.of(1, 0, 0, new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 1, Manifold.ManifoldType.FACE_A),
                 Arguments.of(1, 10, 10, new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 0, null),
                 Arguments.of(10, 0, 0, new Vec2[]{new Vec2(9, 0), new Vec2(9, 1), new Vec2(20, 1), new Vec2(20, 0)}, 1, Manifold.ManifoldType.FACE_A),
-                Arguments.of(1, 0, 0, new Vec2[]{new Vec2(-10, -10), new Vec2(10, -10), new Vec2(-10, 10), new Vec2(10, 10)}, 1, Manifold.ManifoldType.FACE_A)
+                Arguments.of(1, 0, 0, new Vec2[]{new Vec2(-10, -10), new Vec2(10, -10), new Vec2(-10, 10), new Vec2(10, 10)}, 1, Manifold.ManifoldType.FACE_A),
+                // Adding tests for BC
+                Arguments.of(100, 0, 0, new Vec2[]{new Vec2(1000, 1000), new Vec2(85, 75), new Vec2(80, 80)}, 0, null),
+                Arguments.of(100, 0, 0, new Vec2[]{new Vec2(1000, 1000), new Vec2(100, 0), new Vec2(0, 99)}, 1, Manifold.ManifoldType.FACE_A),
+                Arguments.of(100, 0, 0, new Vec2[]{new Vec2(1000, 1000), new Vec2(1000, 1001), new Vec2(100, 0)}, 1, Manifold.ManifoldType.FACE_A),
+                Arguments.of(100, 0, 0, new Vec2[]{new Vec2(1000, 1000), new Vec2(1000, 1001), new Vec2(99.9f, 0)}, 1, Manifold.ManifoldType.FACE_A),
+                Arguments.of(100, 0, 0, new Vec2[]{new Vec2(1000, 1000), new Vec2(1000, 1001), new Vec2(100.1f, 0)}, 0, null)
+                //Arguments.of(100, 0, 0, new Vec2[]{new Vec2(-10, -10), new Vec2(10, -10), new Vec2(-10, 10)}, 1, Manifold.ManifoldType.FACE_A)
          );
     }
     @ParameterizedTest
@@ -263,6 +268,34 @@ public class TestCollision {
         assertEquals(manifoldType, manifold.type);
     }
 
+    private static Stream<Arguments> testCollidePolygonsConcaveArgs() {
+        return Stream.of(
+                Arguments.of(
+                        new Vec2[]{new Vec2(0, 10), new Vec2(1, 1), new Vec2(10, 0), new Vec2(1, -1), new Vec2(0, -10), new Vec2(-1, -1), new Vec2(-1, 0), new Vec2(-1, 1)},
+                        new Vec2[]{new Vec2(0, 10), new Vec2(1, 1), new Vec2(10, 0), new Vec2(1, -1), new Vec2(0, -10), new Vec2(-1, -1), new Vec2(-1, 0), new Vec2(-1, 1)},
+                        1, Manifold.ManifoldType.FACE_A)
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("testCollidePolygonsConcaveArgs")
+    public void testCollidePolygonsConcave(Vec2[] vertices1, Vec2[] vertices2, int pointCount, Manifold.ManifoldType manifoldType) {
+        PolygonShape polygonShape1 = new PolygonShape();
+        PolygonShape polygonShape2 = new PolygonShape();
+
+        polygonShape1.m_count = vertices1.length;
+        polygonShape2.m_count = vertices2.length;
+
+        System.arraycopy(vertices1, 0, polygonShape1.m_vertices, 0, vertices1.length);
+        System.arraycopy(vertices2, 0, polygonShape2.m_vertices, 0, vertices2.length);
+        Transform transform = new Transform(new Vec2(2,2), new Rot(1f));
+        collision.collidePolygons(manifold, polygonShape2, transform, polygonShape1, identity);
+        System.out.println(manifold.localNormal);
+        System.out.println(manifold.points[0].localPoint);
+        System.out.println(manifold.localPoint);
+        assertEquals(pointCount, manifold.pointCount);
+        assertEquals(manifoldType, manifold.type);
+    }
+
     // Testing: collideEdgeAndCircle()
     private static Stream<Arguments> testCollideEdgeAndCircleArgs() {
         return Stream.of(
@@ -279,7 +312,11 @@ public class TestCollision {
                 Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(2,-2), 0, null),
                 Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(3,-2), 0, null),
                 Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(4,-2), 0, null),
-                Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(0,0), 1, Manifold.ManifoldType.CIRCLES)
+                Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(0,0), 1, Manifold.ManifoldType.CIRCLES),
+                // Adding additional tests for BC
+                Arguments.of(100, 0, 0, new Vec2(80,80), new Vec2(81,81), 0, null)
+                //Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(0,0), 1, Manifold.ManifoldType.CIRCLES),
+                //Arguments.of(1, 0, 0, new Vec2(1,2), new Vec2(0,0), 1, Manifold.ManifoldType.CIRCLES)
         );
     }
     @ParameterizedTest
