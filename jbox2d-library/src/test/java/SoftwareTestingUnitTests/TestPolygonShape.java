@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.lang.Float.MIN_NORMAL;
 import static org.junit.jupiter.api.Assertions.*;
 public class TestPolygonShape {
     // Testing: initialization
@@ -65,9 +66,15 @@ public class TestPolygonShape {
     private static Stream<Arguments> testSetArgs() {
         return Stream.of(
                 Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(0, 1), new Vec2(1, 1)}, 3),
-                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4)
-//                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(2, 2)}, 5)
-        );
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(2, 2)}, 5),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0)}, 4),
+                Arguments.of(new Vec2[]{}, 0),
+                Arguments.of(new Vec2[]{new Vec2(0,0)}, 1),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(0.5f,0.5f)}, 5),
+                Arguments.of(new Vec2[]{new Vec2(0, 1), new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 0)}, 4),
+                Arguments.of(new Vec2[]{new Vec2(1, 0), new Vec2(1, 1), new Vec2(0, 1), new Vec2(0, 0), new Vec2(0.5f,0.5f)}, 5)
+                );
     }
 
     @ParameterizedTest
@@ -154,6 +161,26 @@ public class TestPolygonShape {
     public void testSetAsBox2(float halfX, float halfY, Vec2 center, float angle, Vec2[] expectedVertices) {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(halfX, halfY, center, angle);
+        assertEquals(4, polygonShape.m_count);
+        Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, 4);
+        List<Vec2> verticesList = Arrays.asList(expectedVertices);
+        List<Vec2> polygonVerticesList = Arrays.asList(polygonVertices);
+        assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
+    }
+
+    // Testing: setAsBox()
+    // TODO: do EP here
+    private static Stream<Arguments> testSetAsBoxArgsWithCenterArgs() {
+        return Stream.of(
+                Arguments.of(1f, 1f, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testSetAsBoxArgsWithCenterArgs")
+    public void testSetAsBoxArgsWithCenter(float halfX, float halfY, Vec2[] expectedVertices) {
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(halfX, halfY, new Vec2(0,0), 0);
         assertEquals(4, polygonShape.m_count);
         Vec2[] polygonVertices = Arrays.copyOf(polygonShape.m_vertices, 4);
         List<Vec2> verticesList = Arrays.asList(expectedVertices);
@@ -285,17 +312,22 @@ public class TestPolygonShape {
     public void testGetVertex(Vec2[] vertices, int count, int vertexIndex) {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set(vertices, count);
-        assertEquals(polygonShape.m_vertices[vertexIndex], polygonShape.getVertex(vertexIndex));
+        assertEquals(polygonShape.m_vertices[Math.abs(vertexIndex)], polygonShape.getVertex(vertexIndex));
     }
 
     // Testing: raycast()
     // TODO: do EP here
     private static Stream<Arguments> testRaycastArgs() {
+        //Adding BC test here
         return Stream.of(
                 Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,1), true),
                 Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-1,2), false),
                 Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,3), false),
                 Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(0f,1f), new Vec2(0.5f,3), false)
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,1), true),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-1f,0), false),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(1f,1), true),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(1,1), new Vec2(2f,1), false)
         );
     }
 
@@ -402,8 +434,10 @@ public class TestPolygonShape {
     // polygonShape.validate() always returns true since gift-wrapping algorithm finds the convex null of a set of points
     // TODO: do EP here
     private static Stream<Arguments> testValidateArgs() {
+        //Adding BC test here
         return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, true)
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, true),
+                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(0.1f, 0.1f), new Vec2(0, 2), new Vec2(0, 0)}, false)
         );
     }
 
