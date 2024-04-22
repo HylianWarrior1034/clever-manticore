@@ -84,6 +84,8 @@ public class PolygonShape extends Shape {
       m_normals[i] = new Vec2();
     }
     setRadius(Settings.polygonRadius);
+
+    // unnecessary since it's initialized to zero anyway
     m_centroid.setZero();
   }
 
@@ -559,6 +561,8 @@ public class PolygonShape extends Shape {
    * 
    * @return true if convex
    */
+
+  // IMPOSSIBLE TO DO MUTATION TESTING. OR BRANCH.
   public boolean validate() {
     for (int i = 0; i < m_count; ++i) {
       int i1 = i;
@@ -600,6 +604,7 @@ public class PolygonShape extends Shape {
   }
 
   /** Get the centroid and apply the supplied transform. */
+  // the return output is literally useless???
   public Vec2 centroidToOut(final Transform xf, final Vec2 out) {
     Transform.mulToOutUnsafe(xf, m_centroid, out);
     return out;
