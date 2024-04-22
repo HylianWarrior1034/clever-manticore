@@ -111,6 +111,8 @@ public class CircleShape extends Shape {
     // return Vec2.dot(d, d) <= m_radius * m_radius;
     final Rot q = transform.q;
     final Vec2 tp = transform.p;
+
+    // the negation is unnecessary
     float centerx = -(q.c * m_p.x - q.s * m_p.y + tp.x - p.x);
     float centery = -(q.s * m_p.x + q.c * m_p.y + tp.y - p.y);
 

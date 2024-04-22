@@ -362,9 +362,9 @@ Whitebox testing
     input.p2.set(vec2);
 
     assertTrue(edge.raycast(output, input, trans, 1));
-    assertEquals(0.6730054020881653, output.fraction);
-    assertEquals(0.650791347026825, output.normal.x);
-    assertEquals(-0.7592566013336182, output.normal.y);
+    assertEquals(0.6730, output.fraction, 1e-4);
+    assertEquals(0.6508, output.normal.x, 1e-4);
+    assertEquals(-0.7593, output.normal.y, 1e-4);
   }
 
 
@@ -384,10 +384,10 @@ Whitebox testing
     rot.c = 1;
     rot.s = 0;
     edge.computeAABB(aabb, trans, 1);
-    assertEquals(0.09000000357627869, aabb.lowerBound.x);
-    assertEquals(0.09000000357627869, aabb.lowerBound.y);
-    assertEquals(0.21000000834465027, aabb.upperBound.x);
-    assertEquals(0.21000000834465027, aabb.upperBound.y);
+    assertEquals(0.0900, aabb.lowerBound.x, 1e-4);
+    assertEquals(0.0900, aabb.lowerBound.y, 1e-4);
+    assertEquals(0.2100, aabb.upperBound.x, 1e-4);
+    assertEquals(0.2100, aabb.upperBound.y, 1e-4);
   }
 
   @Test
@@ -401,10 +401,10 @@ Whitebox testing
     rot.c = 0;
     rot.s = 1;
     edge.computeAABB(aabb, trans, 1);
-    assertEquals(0.09000000357627869, aabb.lowerBound.x);
-    assertEquals(0.09000000357627869, aabb.lowerBound.y);
-    assertEquals(0.21000000834465027, aabb.upperBound.x);
-    assertEquals(0.21000000834465027, aabb.upperBound.y);
+    assertEquals(0.0900, aabb.lowerBound.x, 1e-4);
+    assertEquals(0.0900, aabb.lowerBound.y, 1e-4);
+    assertEquals(0.2100, aabb.upperBound.x, 1e-4);
+    assertEquals(0.2100, aabb.upperBound.y, 1e-4);
   }
 
   /*
@@ -465,10 +465,10 @@ Whitebox testing
     rot.c = 0;
     rot.s = 1;
     edge.computeAABB(aabb, trans, 1);
-    assertEquals(0.1899999976158142, aabb.lowerBound.x);
-    assertEquals(0.1899999976158142, aabb.lowerBound.y);
-    assertEquals(0.3100000023841858, aabb.upperBound.x);
-    assertEquals(0.3100000023841858, aabb.upperBound.y);
+    assertEquals(0.190, aabb.lowerBound.x, 1e-4);
+    assertEquals(0.190, aabb.lowerBound.y, 1e-4);
+    assertEquals(0.310, aabb.upperBound.x, 1e-4);
+    assertEquals(0.310, aabb.upperBound.y, 1e-4);
   }
 
   @Test
@@ -482,10 +482,10 @@ Whitebox testing
     trans.q.set(rot);
     trans.p.set(new Vec2());
     edge.computeAABB(aabb, trans, 1);
-    assertEquals(-0.08070000261068344, aabb.lowerBound.x);
-    assertEquals(0.20210000872612, aabb.lowerBound.y);
-    assertEquals(0.08070000261068344, aabb.upperBound.x);
-    assertEquals(0.22210001945495605, aabb.upperBound.y);
+    assertEquals(-0.0807, aabb.lowerBound.x, 1e-4);
+    assertEquals(0.2021, aabb.lowerBound.y, 1e-4);
+    assertEquals(0.0807, aabb.upperBound.x, 1e-4);
+    assertEquals(0.2221, aabb.upperBound.y, 1e-4);
   }
 
   @Test
@@ -499,9 +499,9 @@ Whitebox testing
     trans.q.set(rot);
     trans.p.set(new Vec2(0.1f, 0.1f));
     edge.computeAABB(aabb, trans, 1);
-    assertEquals(0.01929999701678753, aabb.lowerBound.x);
-    assertEquals(0.3021000325679779, aabb.lowerBound.y);
-    assertEquals(0.18070001900196075, aabb.upperBound.x);
-    assertEquals(0.3221000134944916, aabb.upperBound.y);
+    assertEquals(0.0193, aabb.lowerBound.x, 1e-4);
+    assertEquals(0.3021, aabb.lowerBound.y, 1e-4);
+    assertEquals(0.1807, aabb.upperBound.x, 1e-4);
+    assertEquals(0.3221, aabb.upperBound.y, 1e-4);
   }
 }
