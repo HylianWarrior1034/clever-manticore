@@ -113,9 +113,6 @@ public class TestPolygonShape {
     // EP: zero || positive values for x and y.
     private static Stream<Arguments> testSetAsBoxArgs() {
         return Stream.of(
-//                Arguments.of(0f, 0f, new Vec2[]{new Vec2(0,0), new Vec2(0,0), new Vec2(0,0), new Vec2(0,0),}),
-//                Arguments.of(0f, 1f, new Vec2[]{new Vec2(0,1), new Vec2(0,-1), new Vec2(0,1), new Vec2(0,-1),}),
-//                Arguments.of(1f, 0f, new Vec2[]{new Vec2(1,0), new Vec2(1,-0), new Vec2(-1,0), new Vec2(-1,0),}),
                 Arguments.of(1f, 1f, new Vec2[]{new Vec2(1,1), new Vec2(1,-1), new Vec2(-1,1), new Vec2(-1,-1),})
         );
     }
@@ -352,8 +349,6 @@ public class TestPolygonShape {
         return Stream.of(
                 Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,1), true, -0.707f, -0.707f),
                 Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-1,2), false, 0, 0)
-//                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(-1,1), new Vec2(-0.5f,3), false),
-//                Arguments.of(new Vec2[]{new Vec2(2, 0), new Vec2(2, 2), new Vec2(0, 2), new Vec2(0, 0)}, new Vec2(0f,1f), new Vec2(0.5f,3), false)
         );
     }
 
