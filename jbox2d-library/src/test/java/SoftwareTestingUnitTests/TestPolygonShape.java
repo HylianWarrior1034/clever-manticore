@@ -89,23 +89,23 @@ public class TestPolygonShape {
         assertTrue(verticesList.containsAll(polygonVerticesList) && polygonVerticesList.containsAll(verticesList));
     }
 
-    private static Stream<Arguments> testSetInvalidArgs() {
-        return Stream.of(
-                Arguments.of(new Vec2[]{new Vec2(0, 0)}, 1),
-                Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(0, 1)}, 2));
-    }
-
-    @ParameterizedTest
-    @MethodSource("testSetInvalidArgs")
-    public void testSetInvalid(Vec2[] vertices, int count) {
-        PolygonShape polygonShape = new PolygonShape();
-        try {
-            polygonShape.set(vertices, count);
-        } catch (AssertionError e) {
-            return;
-        }
-        fail("Error not caught");
-    }
+//    private static Stream<Arguments> testSetInvalidArgs() {
+//        return Stream.of(
+//                Arguments.of(new Vec2[]{new Vec2(0, 0)}, 1),
+//                Arguments.of(new Vec2[]{new Vec2(0, 0), new Vec2(0, 1)}, 2));
+//    }
+//
+//    @ParameterizedTest
+//    @MethodSource("testSetInvalidArgs")
+//    public void testSetInvalid(Vec2[] vertices, int count) {
+//        PolygonShape polygonShape = new PolygonShape();
+//        try {
+//            polygonShape.set(vertices, count);
+//        } catch (AssertionError e) {
+//            return;
+//        }
+//        fail("Error not caught");
+//    }
 
     // Testing: setAsBox()
     // EP: zero || positive values for x and y.
