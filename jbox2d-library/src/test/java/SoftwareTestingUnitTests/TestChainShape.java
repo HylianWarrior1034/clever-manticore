@@ -3,19 +3,23 @@ package SoftwareTestingUnitTests;
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.RayCastInput;
 import org.jbox2d.collision.RayCastOutput;
-import org.jbox2d.collision.shapes.ChainShape;
-import org.jbox2d.collision.shapes.EdgeShape;
-import org.jbox2d.collision.shapes.MassData;
-import org.jbox2d.collision.shapes.ShapeType;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.Settings;
 import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/*
+ * So given a red line in the pit report, you should make a test that reaches
+ * that part of the code and fails for the given mutant.
+ */
 /**
  * Notes on Chain Shape:
  * There are two important inner variables: m_vertices and m_count. The latter
@@ -53,6 +57,20 @@ public class TestChainShape {
     assertNull(chain.m_vertices);
   }
 
+  @Test
+  public void testGetChildrenCountMut_SubtractionIsAddition() {
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length - 1;
+    assertNotEquals(5, chain.getChildCount());
+  }
+
+  @Test
+  public void testGetChildrenCountMut_ReturnZero() {
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length - 1;
+    assertNotEquals(0,chain.getChildCount());
+  }
+
 //  @Test
 //  public void testNewChainNoChildren() {
 //    assertEquals(0, chain.getChildCount());
@@ -65,58 +83,80 @@ public class TestChainShape {
 //    assertNull(edge);
 //  }
 
-//  @Test
-//  public void testGetChildEdgeChildfullChain() {
-//    Vec2[] vertices = new Vec2[] {
-//      new Vec2(),
-//      new Vec2(1.0f,1.0f),
-//      new Vec2(2.0f,2.0f),
-//      new Vec2(3.0f,3.0f),
-//      new Vec2(4.0f, 4.0f)
-//    };
-//    chain.m_vertices = vertices;
-//    chain.m_count = vertices.length - 1; // 4
-//    EdgeShape edge;
-//    // Path -1 : index fails assert:  index < 0
-//    assertThrows(AssertionError.class, () -> {
-//      chain.getChildEdge(new EdgeShape(), -1);
-//    });
-//    // Path 0: index: 0 pass assert, IF index = 0 , index < 2
-//    edge = new EdgeShape();
-//    chain.getChildEdge(edge, 0);
-//    assertEquals(chain.m_prevVertex,edge.m_vertex0);
-//    assertEquals(new Vec2(0f,0f), edge.m_vertex1);
-//    assertEquals(new Vec2(1f,1f), edge.m_vertex2);
-//    assertEquals(new Vec2(2f,2f), edge.m_vertex3);
-//    assertNotNull(edge);
-//    // Path 1: index: 1 pass assert, IF index > 0 , index < 2
-//    edge = new EdgeShape();
-//    chain.getChildEdge(edge, 1);
-//    assertEquals(new Vec2(),edge.m_vertex0);
-//    assertEquals(new Vec2(1f,1f), edge.m_vertex1);
-//    assertEquals(new Vec2(2f,2f), edge.m_vertex2);
-//    assertEquals(new Vec2(3f,3f), edge.m_vertex3);
-//    assertNotNull(edge);
-//    // Path 2: index 2 pass assert, IF index > 0 , index == 2
-//    edge = new EdgeShape();
-//    chain.getChildEdge(edge, 2);
-//    assertEquals(new Vec2(1f,1f),edge.m_vertex0);
-//    assertEquals(new Vec2(2f,2), edge.m_vertex1);
-//    assertEquals(new Vec2(3f, 3f), edge.m_vertex2);
-//    assertEquals(chain.m_nextVertex, edge.m_vertex3);
-//    assertNotNull(edge);
-//    //Path 3: index 3 fail assert: m_count - 1
-//    assertThrows(AssertionError.class, () -> {
-//      chain.getChildEdge(new EdgeShape(), 3);
-//    });
-//
-//
-//
-//  }
+  @Test
+  public void testGetChildEdgeChildChain() {
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length - 1; // 4
+    EdgeShape edge;
+    // Path 0: index: 0 pass assert, IF index = 0 , index < 2
+    edge = new EdgeShape();
+    chain.getChildEdge(edge, 0);
+    assertEquals(chain.m_prevVertex,edge.m_vertex0);
+    assertEquals(new Vec2(0f,0f), edge.m_vertex1);
+    assertEquals(new Vec2(1f,1f), edge.m_vertex2);
+    assertEquals(new Vec2(2f,2f), edge.m_vertex3);
+    assertNotNull(edge);
+  }
+
+  @Test
+  public void testGetChildEdgeChain2() {
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length - 1; // 4
+    EdgeShape edge;
+    // Path 1: index: 1 pass assert, IF index > 0 , index < 2
+    edge = new EdgeShape();
+    chain.getChildEdge(edge, 1);
+    assertEquals(new Vec2(),edge.m_vertex0);
+    assertEquals(new Vec2(1f,1f), edge.m_vertex1);
+    assertEquals(new Vec2(2f,2f), edge.m_vertex2);
+    assertEquals(new Vec2(3f,3f), edge.m_vertex3);
+    assertNotNull(edge);
+  }
+
+  @Test
+  public void testGetChildEdgeChain3() {
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length - 1; // 4
+    EdgeShape edge;
+    // Path 2: index 2 pass assert, IF index > 0 , index == 2
+    edge = new EdgeShape();
+    chain.getChildEdge(edge, 2);
+    assertEquals(new Vec2(1f,1f),edge.m_vertex0);
+    assertEquals(new Vec2(2f,2), edge.m_vertex1);
+    assertEquals(new Vec2(3f, 3f), edge.m_vertex2);
+    assertEquals(chain.m_nextVertex, edge.m_vertex3);
+    assertNotNull(edge);
+  }
+
+ // @Test
+ // public void testGetChildEdgeChildfullChain() {
+ //   chain.m_vertices = basicVertices;
+ //   chain.m_count = basicVertices.length - 1; // 4
+ //   EdgeShape edge;
+ //   //Path 3: index 3 fail assert: m_count - 1
+ //   assertThrows(AssertionError.class, () -> {
+ //     chain.getChildEdge(new EdgeShape(), 3);
+ //   });
+ //   // Path -1 : index fails assert:  index < 0
+ //   assertThrows(AssertionError.class, () -> {
+ //     chain.getChildEdge(new EdgeShape(), -1);
+ //   });
+ //
+ // }
 
   @Test
   public void testPointAlwaysFalse() {
     assertFalse(chain.testPoint(new Transform(),new Vec2()));
+  }
+
+  @Test
+  @Tag("modified test")
+  public void testModifiedCloneWithBetterCount() {
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length;
+    Shape copy = chain.clone();
+    chain.m_count--; //covers the issue to reach deeper into the code
+    assertEquals(ShapeType.CHAIN,copy.m_type);
   }
 
 //  @Test
@@ -162,7 +202,7 @@ public class TestChainShape {
   }
 
   @Test
-  public void testRaycast() {
+  public void testRaycastNotChildIndex() {
     chain.m_count = 5;
     RayCastOutput outputray = new RayCastOutput();
     RayCastInput inputray = new RayCastInput();
@@ -179,6 +219,42 @@ public class TestChainShape {
 
   }
 
+  @Test
+  public void testRaycastLastChild() {
+    chain.m_count = 5;
+    RayCastOutput outputray = new RayCastOutput();
+    RayCastInput inputray = new RayCastInput();
+    Transform xf = new Transform();
+    chain.m_vertices = basicVertices;
+    chain.m_count = basicVertices.length - 1;
+    int childindex = chain.m_count -1;
+    assertFalse(chain.raycast(outputray, inputray, xf, childindex));
+    // assertThrows(NullPointerException.class, () -> {
+    //   assertTrue(chain.raycast(outputray, inputray, xf, 0));
+    // });
+
+  }
+
+
+  @Test
+  public void testComputeAABBPoint() {
+    AABB box3 = new AABB(new Vec2(),new Vec2());
+    chain.m_vertices = new Vec2[]{new Vec2(),new Vec2(),new Vec2()};
+    chain.m_count = basicVertices.length -1; //3
+    chain.computeAABB(box3,new Transform(),1);
+    assertEquals(new Vec2(), box3.lowerBound);
+    assertEquals(new Vec2(), box3.upperBound);
+  }
+
+  @Test
+  public void testComputeAABBPoint2() {
+    AABB box3 = new AABB(new Vec2(),new Vec2());
+    chain.m_vertices = new Vec2[]{new Vec2(1,1),new Vec2(),new Vec2()};
+    chain.m_count = basicVertices.length -1; //3
+    chain.computeAABB(box3,new Transform(),1);
+    assertEquals(new Vec2(), box3.lowerBound);
+    assertEquals(new Vec2(), box3.upperBound);
+  }
 
   /**
    * NOTE: none of these exceptions should be thrown
@@ -238,6 +314,14 @@ public class TestChainShape {
   }
 
   @Test
+  public void testComputeMassCenter() {
+    MassData massData = new MassData();
+    float density = 0.0F;
+    chain.computeMass(massData, density);
+    assertEquals(new Vec2(0f,0f), massData.center);
+  }
+
+  @Test
   public void testSetPrevVertex() {
     Vec2 vertex = new Vec2(4.5f, 0.4f);
     chain.setPrevVertex(vertex);
@@ -293,21 +377,48 @@ public class TestChainShape {
 //    });
 //  }
 
-//  @Test
-//  public void testCreateChainRegular() {
-//    chain.createChain(basicVertices, 4);
-//    assertArrayEquals(basicVertices, chain.m_vertices);
-//    assertFalse(chain.m_hasNextVertex);
-//    assertFalse(chain.m_hasPrevVertex);
-//  }
+ @Test
+ public void testCreateChainRegular() {
+   chain.createChain(basicVertices, basicVertices.length - 1);
+   //saves N-1 vertices
+   assertEquals(basicVertices[0], chain.m_vertices[0]);
+   // assertArrayEquals(basicVertices, chain.m_vertices);
+   assertFalse(chain.m_hasNextVertex);
+   assertFalse(chain.m_hasPrevVertex);
+ }
 
-//  @Test
-//  public void testCreateChainRepeatingVecs() {
-//    Vec2[] v = new Vec2[] {new Vec2(), new Vec2(), new Vec2()};
-//    chain = new ChainShape();
-//    chain.createChain(v, 2);
-//    assertArrayEquals(v, chain.m_vertices);
-//  }
+ @Test
+ public void testCreateChainRepeatingVecs() {
+   Vec2[] v = new Vec2[] {new Vec2(), new Vec2(), new Vec2()};
+   chain = new ChainShape();
+   assertThrows(RuntimeException.class,() -> {
+     chain.createChain(v, 2);
+   });
+   // assertArrayEquals(v, chain.m_vertices);
+ }
+
+  @Test
+  public void testCreateChain2() {
+    //Settings.linearSlop = 0.005f - > squared = 0.000025f
+    Vec2[] v = new Vec2[] {new Vec2(1f,1f), new Vec2(0,0), new Vec2(0.0025f,0.06f)};
+    // assertThrows(RuntimeException.class,() -> {
+    //   chain.createChain(v, 1);
+    // });
+    chain.createChain(v, 3);
+    assertArrayEquals(v, chain.m_vertices);
+  }
+
+
+  @Test
+  public void testCreateChainEdgeCountEqualtoVecCount() {
+    Vec2[] v = new Vec2[] {new Vec2(), new Vec2(1f,1f), new Vec2(2f,2f)};
+    chain = new ChainShape();
+    chain.createChain(v, 3);
+    // assertThrows(RuntimeException.class,() -> {
+    //   chain.createChain(v, 3);
+    // });
+    assertArrayEquals(v, chain.m_vertices);
+  }
 
   /*
   null   | n
