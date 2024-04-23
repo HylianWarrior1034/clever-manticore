@@ -128,21 +128,21 @@ public class TestChainShape {
     assertNotNull(edge);
   }
 
- // @Test
- // public void testGetChildEdgeChildfullChain() {
- //   chain.m_vertices = basicVertices;
- //   chain.m_count = basicVertices.length - 1; // 4
- //   EdgeShape edge;
- //   //Path 3: index 3 fail assert: m_count - 1
- //   assertThrows(AssertionError.class, () -> {
- //     chain.getChildEdge(new EdgeShape(), 3);
- //   });
- //   // Path -1 : index fails assert:  index < 0
- //   assertThrows(AssertionError.class, () -> {
- //     chain.getChildEdge(new EdgeShape(), -1);
- //   });
- //
- // }
+  // @Test
+  // public void testGetChildEdgeChildfullChain() {
+  //   chain.m_vertices = basicVertices;
+  //   chain.m_count = basicVertices.length - 1; // 4
+  //   EdgeShape edge;
+  //   //Path 3: index 3 fail assert: m_count - 1
+  //   assertThrows(AssertionError.class, () -> {
+  //     chain.getChildEdge(new EdgeShape(), 3);
+  //   });
+  //   // Path -1 : index fails assert:  index < 0
+  //   assertThrows(AssertionError.class, () -> {
+  //     chain.getChildEdge(new EdgeShape(), -1);
+  //   });
+  //
+  // }
 
   @Test
   public void testPointAlwaysFalse() {
@@ -338,6 +338,14 @@ public class TestChainShape {
   }
 
   @Test
+  public void testCreateLoopFromEmptyVertices() {
+    Vec2[] loopVertices = {new Vec2()};
+    assertThrows(ArrayIndexOutOfBoundsException.class,() -> {
+      chain.createLoop(loopVertices,3);
+    });
+  }
+
+  @Test
   public void testCreateLoop() {
     Vec2[] loopVertices = new Vec2[] {new Vec2(),new Vec2(0,1f),new Vec2(0.5f,1f),new Vec2()};
     chain.createLoop(loopVertices,3);
@@ -377,25 +385,25 @@ public class TestChainShape {
 //    });
 //  }
 
- @Test
- public void testCreateChainRegular() {
-   chain.createChain(basicVertices, basicVertices.length - 1);
-   //saves N-1 vertices
-   assertEquals(basicVertices[0], chain.m_vertices[0]);
-   // assertArrayEquals(basicVertices, chain.m_vertices);
-   assertFalse(chain.m_hasNextVertex);
-   assertFalse(chain.m_hasPrevVertex);
- }
+  @Test
+  public void testCreateChainRegular() {
+    chain.createChain(basicVertices, basicVertices.length - 1);
+    //saves N-1 vertices
+    assertEquals(basicVertices[0], chain.m_vertices[0]);
+    // assertArrayEquals(basicVertices, chain.m_vertices);
+    assertFalse(chain.m_hasNextVertex);
+    assertFalse(chain.m_hasPrevVertex);
+  }
 
- @Test
- public void testCreateChainRepeatingVecs() {
-   Vec2[] v = new Vec2[] {new Vec2(), new Vec2(), new Vec2()};
-   chain = new ChainShape();
-   assertThrows(RuntimeException.class,() -> {
-     chain.createChain(v, 2);
-   });
-   // assertArrayEquals(v, chain.m_vertices);
- }
+  @Test
+  public void testCreateChainRepeatingVecs() {
+    Vec2[] v = new Vec2[] {new Vec2(), new Vec2(), new Vec2()};
+    chain = new ChainShape();
+    assertThrows(RuntimeException.class,() -> {
+      chain.createChain(v, 2);
+    });
+    // assertArrayEquals(v, chain.m_vertices);
+  }
 
   @Test
   public void testCreateChain2() {
