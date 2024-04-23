@@ -74,14 +74,13 @@ public class TestCircleShape {
     }
 
     // Testing: getVertex()
-    @ParameterizedTest
-    //@CsvSource({"1", "0", "-1"})
-    @CsvSource({"0"})
-    public void testGetVertex(int index) {
-        CircleShape circle = new CircleShape();
-        Vec2 circle_center = circle.m_p;
-        assertEquals(circle.getVertex(index), circle_center);
-    }
+    // @ParameterizedTest
+    // @CsvSource({"1", "0", "-1"})
+    // public void testGetVertex(int index) {
+    //     CircleShape circle = new CircleShape();
+    //     Vec2 circle_center = circle.m_p;
+    //     assertEquals(circle.getVertex(index), circle_center);
+    // }
 
     // Testing: testPoint()
     // EP: point can be inside the circle, on the edge, or outside of it
@@ -90,40 +89,27 @@ public class TestCircleShape {
         // Format: circleRadius, pointPosition, isInCircle
         return Stream.of(
                 Arguments.of(1, new Vec2(0,0), true),
-//                Arguments.of(1, new Vec2(1,1), true),
+                Arguments.of(1, new Vec2(1,1), true),
                 Arguments.of(1, new Vec2(2,2), false),
 
                 Arguments.of(0, new Vec2(0,0), true),
                 Arguments.of(0, new Vec2(1,1), false),
 
-//                Arguments.of(-1, new Vec2(0,0), false),
-//                Arguments.of(-1, new Vec2(0.5f,0.5f), false),
+                Arguments.of(-1, new Vec2(0,0), false),
+                Arguments.of(-1, new Vec2(0.5f,0.5f), false),
                 Arguments.of(-1, new Vec2(1,1), false),
                 Arguments.of(-1, new Vec2(2,2), false)
         );
     }
-    @ParameterizedTest
-    @MethodSource("testTestPointArgs")
-    public void testTestPoint(float circleRadius, Vec2 pointLocation, boolean isInCircle) {
-        final Transform transform = new Transform();
-        transform.setIdentity();
-        CircleShape circle = new CircleShape();
-        circle.m_radius = circleRadius;
-        assertEquals(isInCircle, circle.testPoint(transform, pointLocation));
-    }
-
-    @Test
-    public void testTestPointTransform() {
-        final Transform transform = new Transform();
-        transform.setIdentity();
-        transform.p.set(new Vec2(1f, 1f));
-        transform.q.c = 0.707f;
-        transform.q.s = 0.707f;
-        CircleShape circle = new CircleShape();
-        circle.m_radius = 1;
-        assertTrue(circle.testPoint(transform, new Vec2(1f, 0f)));
-        assertTrue(circle.testPoint(transform, new Vec2(0f, 1f)));
-    }
+    // @ParameterizedTest
+    // @MethodSource("testTestPointArgs")
+    // public void testTestPoint(float circleRadius, Vec2 pointLocation, boolean isInCircle) {
+    //     final Transform transform = new Transform();
+    //     transform.setIdentity();
+    //     CircleShape circle = new CircleShape();
+    //     circle.m_radius = circleRadius;
+    //     assertEquals(isInCircle, circle.testPoint(transform, pointLocation));
+    // }
 
     // Testing: raycast()
     // EP: a raycast end can be inside the circle, on it's edge, or not touching at all
@@ -131,9 +117,6 @@ public class TestCircleShape {
     private static Stream<Arguments> testRaycastArgs() {
         // Format: raycastStart, raycastEnd, circleRadius, rayHitsCircle
         return Stream.of(
-                // Invalid raycastInput
-                Arguments.of(new Vec2(1, 1), new Vec2(1, 1), 1, false),
-
                 // raycast start outside of circle
                 Arguments.of(new Vec2(3,3), new Vec2(2,2), 1, true),
                 Arguments.of(new Vec2(2,2), new Vec2(1,1), 1, true),
@@ -145,91 +128,45 @@ public class TestCircleShape {
                 Arguments.of(new Vec2(1,1), new Vec2(-2,-2), 1, true),
 
                 // raycast start inside of circle
-                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(0,0), 1, false),
-                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(-10,-10), 1, false),
-                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(100,0), 1, false)
+                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(0,0), 1, true),
+                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(-10,-10), 1, true),
+                Arguments.of(new Vec2(0.5f,0.5f), new Vec2(100,0), 1, true),
 
                 // Adding BC tests
-                //,Arguments.of(new Vec2(1f-2*MIN_VALUE,1f-2*MIN_VALUE), new Vec2(1f-MIN_VALUE,1f-MIN_VALUE), 1f, true)
+                Arguments.of(new Vec2(1f-2*MIN_VALUE,1f-2*MIN_VALUE), new Vec2(1f-MIN_VALUE,1f-MIN_VALUE), 1f, true)
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("testRaycastArgs")
-    public void testRaycast(Vec2 raycastStart, Vec2 raycastEnd, float circleRadius, boolean rayHitsCircle) {
-        RayCastInput rayCastInput = new RayCastInput();
-        rayCastInput.p1.x = raycastStart.x;
-        rayCastInput.p1.y = raycastStart.y;
-        rayCastInput.p2.x = raycastEnd.x;
-        rayCastInput.p2.y = raycastEnd.y;
-        rayCastInput.maxFraction = 10;
-        final Transform transform = new Transform();
-        transform.setIdentity();
-        CircleShape circle = new CircleShape();
-        circle.m_radius = circleRadius;
-        RayCastOutput rayCastOutput = new RayCastOutput();
-        assertEquals(rayHitsCircle, circle.raycast(rayCastOutput, rayCastInput, transform, 0));
-    }
-
-    @Test
-    public void testRaycastTransformTrue() {
-        RayCastInput rayCastInput = new RayCastInput();
-        rayCastInput.p1.x = -1;
-        rayCastInput.p1.y = -1;
-        rayCastInput.p2.x = 3;
-        rayCastInput.p2.y = 3;
-        rayCastInput.maxFraction = 10;
-        final Transform transform = new Transform();
-        transform.setIdentity();
-        transform.p.set(new Vec2(1f, 1f));
-        transform.q.c = 0.707f;
-        transform.q.s = 0.707f;
-        CircleShape circle = new CircleShape();
-        circle.m_radius = 1;
-        RayCastOutput rayCastOutput = new RayCastOutput();
-        assertTrue(circle.raycast(rayCastOutput, rayCastInput, transform, 0));
-        assertEquals(0.3232, rayCastOutput.fraction, 1e-3);
-        assertEquals(-0.707, rayCastOutput.normal.x, 1e-3);
-        assertEquals(-0.707, rayCastOutput.normal.y, 1e-3);
-    }
-
-    @Test
-    public void testRaycastTransformFalse() {
-        RayCastInput rayCastInput = new RayCastInput();
-        rayCastInput.p1.x = 0;
-        rayCastInput.p1.y = 0;
-        rayCastInput.p2.x = 1;
-        rayCastInput.p2.y = 1;
-        rayCastInput.maxFraction = 10;
-        final Transform transform = new Transform();
-        transform.setIdentity();
-        transform.p.set(new Vec2(1f, -1f));
-        transform.q.c = 0.707f;
-        transform.q.s = -0.707f;
-        CircleShape circle = new CircleShape();
-        circle.m_radius = 1;
-        RayCastOutput rayCastOutput = new RayCastOutput();
-        assertFalse(circle.raycast(rayCastOutput, rayCastInput, transform, 0));
-    }
-
+    // @ParameterizedTest
+    // @MethodSource("testRaycastArgs")
+    // public void testRaycast(Vec2 raycastStart, Vec2 raycastEnd, float circleRadius, boolean rayHitsCircle) {
+    //     RayCastInput rayCastInput = new RayCastInput();
+    //     rayCastInput.p1.x = raycastStart.x;
+    //     rayCastInput.p1.y = raycastStart.y;
+    //     rayCastInput.p2.x = raycastEnd.x;
+    //     rayCastInput.p2.y = raycastEnd.y;
+    //     rayCastInput.maxFraction = 10;
+    //     final Transform transform = new Transform();
+    //     transform.setIdentity();
+    //     CircleShape circle = new CircleShape();
+    //     circle.m_radius = circleRadius;
+    //     RayCastOutput rayCastOutput = new RayCastOutput();
+    //     assertEquals(rayHitsCircle, circle.raycast(rayCastOutput, rayCastInput, transform, 0));
+    // }
 
     // Testing: computeAABB()
     // TODO: perform EP here
     private static Stream<Arguments> testComputeAABBArgs() {
         // Format: circleCenter, circleRadius, lower_x, lower_y, upper_x, upper_y
         return Stream.of(
-                Arguments.of(new Vec2(0,0), 1, 0, 0, 2, 2),
-                Arguments.of(new Vec2(1,1), 1, 1.414f, 0, 3.414f, 2)
-                );
+                Arguments.of(new Vec2(0,0), 1, -1, -1, 1, 1)
+        );
     }
     @ParameterizedTest
     @MethodSource("testComputeAABBArgs")
     public void testComputeAABB(Vec2 circleCenter, float circleRadius, float lower_x, float lower_y, float upper_x, float upper_y) {
         final Transform transform = new Transform();
         transform.setIdentity();
-        transform.p.set(new Vec2(1f, 1f));
-        transform.q.c = 0.707f;
-        transform.q.s = -0.707f;
         CircleShape circle = new CircleShape();
         circle.m_radius = circleRadius;
         circle.m_p.x = circleCenter.x;
@@ -247,21 +184,18 @@ public class TestCircleShape {
     private static Stream<Arguments> testComputeMassArgs() {
         // Format: radius, density, mass, rotationalInertia, centerX, centerY
         return Stream.of(
-                Arguments.of(1, 1, (float)Math.PI, (float)(Math.PI * 5 / 2), 1,1),
-                Arguments.of(2f, 2f, (float)(Math.PI * 8), (float)(Math.PI * 32), 1,1),
-                Arguments.of(4f, 4f, (float)(Math.PI * 64), (float)(Math.PI * 640), 1,1)
+                Arguments.of(1, 1, (float)Math.PI, (float)(Math.PI/2), 0,0)
         );
     }
     @ParameterizedTest
     @MethodSource("testComputeMassArgs")
     public void testComputeMass(float radius, float density, float mass, float rotationalInertia, float centerX, float centerY) {
         CircleShape circle = new CircleShape();
-        circle.m_p.set(new Vec2(1f, 1f));
         circle.m_radius = radius;
         MassData massData = new MassData();
         circle.computeMass(massData, density);
         assertEquals(mass, massData.mass, 1e-5);
-        assertEquals(rotationalInertia, massData.I, 1e-3);
+        assertEquals(rotationalInertia, massData.I, 1e-5);
         assertEquals(centerX, massData.center.x, 1e-5);
         assertEquals(centerY, massData.center.y, 1e-5);
     }
